@@ -1,8 +1,10 @@
-public enum KategorijaUsluga
+namespace SakuraWeb.Models
 {
-    Sisanje,
-    Feniranje,
-    Farbanje,
-    Stilizovanje
-
+    public enum KategorijaUsluga
+    {
+        Šišanje,
+        Feniranje,
+        Farbanje,
+        Stilizovanje
+    }
 }

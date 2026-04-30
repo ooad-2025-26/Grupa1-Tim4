@@ -1,6 +1,9 @@
-public enum Uloga
+namespace SakuraWeb.Models
 {
-    Administrator,
-    Klijent,
-    Frizer
+    public enum Uloga
+    {
+        Administrator,
+        Klijent,
+        Frizer
+    }
 }

@@ -7,10 +7,10 @@ namespace SakuraWeb.Models
     {
         [Key]
         int id { get; set; }
-        [ForeignKey("Anketa")]
-        int anketaId;
-        string naziv { get; set; }
-        string tekst { get; set; }
+        [ForeignKey("Newsletter")]
+        public int newsletterId { get; set; }
+        public string naziv { get; set; }
+        public string tekst { get; set; }
 
         public Poruka(string naziv, string tekst)
         {
@@ -23,7 +23,5 @@ namespace SakuraWeb.Models
             this.naziv = string.Empty;
             this.tekst = string.Empty;
         }
-
-
     }
 }

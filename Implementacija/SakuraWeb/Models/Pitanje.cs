@@ -1,26 +1,30 @@
-public class Pitanje
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SakuraWeb.Models
 {
-	[Key]
-	public int ID { get; set; }
-
-	public string Sadrzaj { get; set; }
-
-    public List<string> Odgovori { get; set; }
-
-	public List<int> Poeni { get; set; }
-
-
-    public Pitanje()
+    public class Pitanje
     {
-        Odgovori = new List<string>();
-        Poeni = new List<int>();
-    }
+        [Key]
+        public int id { get; set; }
+        [ForeignKey("Anketa")]
+        public int anketaId { get; set; }
+        public string sadrzaj { get; set; }
+        public List<string> odgovori { get; set; }
+        public List<int> poeni { get; set; }
 
-    public Pitanje(string sadrzaj, List<string> odgovori, List<int> poeni)
-    {
-        this.Sadrzaj = sadrzaj;
-        this.Odgovori = odgovori;
-        this.Poeni = poeni;
-    }
 
+        public Pitanje()
+        {
+            odgovori = new List<string>();
+            poeni = new List<int>();
+        }
+
+        public Pitanje(string sadrzaj, List<string> odgovori, List<int> poeni)
+        {
+            this.sadrzaj = sadrzaj;
+            this.odgovori = odgovori;
+            this.poeni = poeni;
+        }
+    }
 }

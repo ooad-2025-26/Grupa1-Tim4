@@ -2,6 +2,9 @@
 {
     public enum KategorijaProizvoda
     {
-        Sampon, Regenerator, Ulje, Maska
+        Šampon, 
+        Regenerator, 
+        Ulje, 
+        Maska
     }
 }

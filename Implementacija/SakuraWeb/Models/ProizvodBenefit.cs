@@ -14,7 +14,7 @@ namespace SakuraWeb.Models
         [ForeignKey("Benefit")]
         public int benefitId { get; set; }
 
-        public Proizvod Proizvod { get; set; }
-        public Benefit Benefit { get; set; }
+        public Proizvod proizvod { get; set; }
+        public Benefit benefit { get; set; }
     }
 }
