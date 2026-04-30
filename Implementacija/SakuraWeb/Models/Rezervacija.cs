@@ -1,0 +1,46 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SakuraWeb.Models
+{
+    public class Rezervacija
+    {
+        [Key]
+        public int id { get; set; }
+        public DateTime datumRezervacije { get; set; }
+        public DateTime vrijemeTermina { get; set; }
+        public bool potvrđena { get; set; }
+
+        [ForeignKey("Korisnik")]
+        public int korisnikId { get; set; }
+        public Korisnik korisnik { get; set; }
+
+        [ForeignKey("Usluga")]
+        public int uslugaId { get; set; }
+        public Usluga usluga { get; set; }
+
+        public Rezervacija()
+        {
+            id = -1;
+            datumRezervacije = default;
+            vrijemeTermina = default;
+            potvrđena = false;
+            korisnikId = 0;
+            korisnik = null;
+            uslugaId = 0;
+            usluga = null;
+        }
+
+        public Rezervacija(int id, DateTime datumRezervacije, DateTime vrijemeTermina, bool potvrđena, int korisnikId, Korisnik korisnik, int uslugaId, Usluga usluga)
+        {
+            this.id = id;
+            this.datumRezervacije = datumRezervacije;
+            this.vrijemeTermina = vrijemeTermina;
+            this.potvrđena = potvrđena;
+            this.korisnikId = korisnikId;
+            this.korisnik = korisnik;
+            this.uslugaId = uslugaId;
+            this.usluga = usluga;
+        }
+    }
+}
