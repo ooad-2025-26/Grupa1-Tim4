@@ -10,21 +10,15 @@ namespace SakuraWeb.Models
         [ForeignKey("Anketa")]
         public int anketaId { get; set; }
         public string sadrzaj { get; set; }
-        public List<string> odgovori { get; set; }
-        public List<int> poeni { get; set; }
-
 
         public Pitanje()
         {
-            odgovori = new List<string>();
-            poeni = new List<int>();
+            sadrzaj = string.Empty;
         }
 
-        public Pitanje(string sadrzaj, List<string> odgovori, List<int> poeni)
+        public Pitanje(string sadrzaj)
         {
             this.sadrzaj = sadrzaj;
-            this.odgovori = odgovori;
-            this.poeni = poeni;
         }
     }
 }
