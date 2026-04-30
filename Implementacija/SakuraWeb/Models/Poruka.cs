@@ -6,7 +6,7 @@ namespace SakuraWeb.Models
     public class Poruka
     {
         [Key]
-        int id { get; set; }
+        public int id { get; set; }
         [ForeignKey("Newsletter")]
         public int newsletterId { get; set; }
         public string naziv { get; set; }
