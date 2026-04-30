@@ -20,6 +20,8 @@ namespace SakuraWeb.Data
         public DbSet<Models.Usluga> usluge { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Models.Anketa>().ToTable("Ankete");
             modelBuilder.Entity<Models.Benefit>().ToTable("Benefiti");
             modelBuilder.Entity<Models.Korisnik>().ToTable("Korisnici");
