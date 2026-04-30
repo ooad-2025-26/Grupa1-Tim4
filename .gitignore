@@ -1,3 +1,4 @@
 .DS_Store
 *.bkp
 .vs/
+/Implementacija/SakuraWeb/Models/Rezervacija.cs

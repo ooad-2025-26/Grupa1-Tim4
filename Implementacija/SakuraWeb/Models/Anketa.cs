@@ -12,7 +12,7 @@ namespace SakuraWeb.Models
 
         }
 
-        public static int dajRezultAtankete()
+        public static int dajRezultatAnkete()
         {
             return 0;
         }
