@@ -16,5 +16,23 @@ namespace SakuraWeb.Models
 
         public Proizvod proizvod { get; set; }
         public Benefit benefit { get; set; }
+
+        public ProizvodBenefit()
+        {
+            id = -1;
+            proizvodId = 0;
+            benefitId = 0;
+            proizvod = null;
+            benefit = null;
+        }
+
+        public ProizvodBenefit(int id, int proizvodId, int benefitId, Proizvod proizvod, Benefit benefit)
+        {
+            this.id = id;
+            this.proizvodId = proizvodId;
+            this.benefitId = benefitId;
+            this.proizvod = proizvod;
+            this.benefit = benefit;
+        }
     }
 }

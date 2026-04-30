@@ -5,8 +5,18 @@ namespace SakuraWeb.Models
     public class Anketa
     {
         [Key]
-        int id;
-        //static List<Pitanje> pitanja { get; set; } // Trenutno van mojih mogucnosti
+        public int id { get; set; }
+
+        public Anketa()
+        {
+            id = -1;
+        }
+
+        public Anketa(int id)
+        {
+            this.id = id;
+        }
+
         public static void ucitajPitanja()
         {
 

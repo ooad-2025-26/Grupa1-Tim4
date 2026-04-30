@@ -5,27 +5,31 @@ namespace SakuraWeb.Models
     public class Newsletter
     {
         [Key]
-        int id { get; set; }
-        //List<Poruka> poruke { get; set; } // Rijesen
+        public int id { get; set; }
 
-        public Newsletter() 
+        public Newsletter()
         {
-            
+            id = -1;
         }
-        
+
+        public Newsletter(int id)
+        {
+            this.id = id;
+        }
+
         public void dodajPoruku(Poruka poruka)
         {
-            //poruke.Add(poruka);
+
         }
 
         public void ukloniPoruku(Poruka poruka)
         {
-            //poruke.Remove(poruka);
+
         }
 
         public void obrisiSvePoruke()
         {
-            //poruke.Clear();
+
         }
 
         public void posaljiNewsletter()

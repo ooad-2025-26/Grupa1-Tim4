@@ -5,12 +5,12 @@ namespace SakuraWeb.Models
     public class Korisnik
     {
         [Key]
-        int id { get; set; }
-        string korisnickoIme { get; set; }
-        string emailAdresa { get; set; }
-        string lozinka { get; set; }
-        bool jePretplacenNaNewsletter { get; set; }
-        Uloga ulogaKorisnika { get; set; }
+        public int id { get; set; }
+        public string korisnickoIme { get; set; }
+        public string emailAdresa { get; set; }
+        public string lozinka { get; set; }
+        public bool jePretplacenNaNewsletter { get; set; }
+        public Uloga ulogaKorisnika { get; set; }
 
         public Korisnik(int id, string korisnickoIme, string emailAdresa, string lozinka, bool jePretplacenNaNewsletter, Uloga ulogaKorisnika)
         {
