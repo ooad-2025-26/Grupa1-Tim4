@@ -6,6 +6,8 @@ namespace SakuraWeb.Models
     {
         [Key]
         public int id { get; set; }
+        public string emailAdresa { get; set; }
+        public string lozinkaZaEmail { get; set; }
 
         public Newsletter()
         {
@@ -15,26 +17,6 @@ namespace SakuraWeb.Models
         public Newsletter(int id)
         {
             this.id = id;
-        }
-
-        public void dodajPoruku(Poruka poruka)
-        {
-
-        }
-
-        public void ukloniPoruku(Poruka poruka)
-        {
-
-        }
-
-        public void obrisiSvePoruke()
-        {
-
-        }
-
-        public void posaljiNewsletter()
-        {
-
         }
 
     }

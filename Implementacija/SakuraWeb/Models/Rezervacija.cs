@@ -9,7 +9,8 @@ namespace SakuraWeb.Models
         public int id { get; set; }
         public DateTime datumRezervacije { get; set; }
         public DateTime vrijemeTermina { get; set; }
-        public bool potvrđena { get; set; }
+        public bool otkazana { get; set; }
+        public int ocjena { get; set; }
 
         [ForeignKey("Korisnik")]
         public int korisnikId { get; set; }
@@ -24,19 +25,19 @@ namespace SakuraWeb.Models
             id = -1;
             datumRezervacije = default;
             vrijemeTermina = default;
-            potvrđena = false;
+            otkazana = false;
             korisnikId = 0;
             korisnik = null;
             uslugaId = 0;
             usluga = null;
         }
 
-        public Rezervacija(int id, DateTime datumRezervacije, DateTime vrijemeTermina, bool potvrđena, int korisnikId, Korisnik korisnik, int uslugaId, Usluga usluga)
+        public Rezervacija(int id, DateTime datumRezervacije, DateTime vrijemeTermina, bool otkazana, int korisnikId, Korisnik korisnik, int uslugaId, Usluga usluga)
         {
             this.id = id;
             this.datumRezervacije = datumRezervacije;
             this.vrijemeTermina = vrijemeTermina;
-            this.potvrđena = potvrđena;
+            this.otkazana = otkazana;
             this.korisnikId = korisnikId;
             this.korisnik = korisnik;
             this.uslugaId = uslugaId;

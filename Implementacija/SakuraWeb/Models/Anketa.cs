@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SakuraWeb.Models
 {
@@ -6,6 +7,8 @@ namespace SakuraWeb.Models
     {
         [Key]
         public int id { get; set; }
+        public int poeni { get; set; }
+        public DateTime vrijemePopunjavanja { get; set; }
 
         public Anketa()
         {
@@ -17,14 +20,9 @@ namespace SakuraWeb.Models
             this.id = id;
         }
 
-        public static void ucitajPitanja()
-        {
 
-        }
-
-        public static int dajRezultatAnkete()
-        {
-            return 0;
-        }
+        [ForeignKey("Korisnik")]
+        public int korisnikId { get; set; }
+        public Korisnik korisnik { get; set; }
     }
 }
