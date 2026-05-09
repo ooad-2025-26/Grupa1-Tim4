@@ -1,0 +1,36 @@
+﻿@model SakuraWeb.Models.Anketa
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Anketa</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.poeni)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.poeni)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.vrijemePopunjavanja)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.vrijemePopunjavanja)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.korisnik)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.korisnik.id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
