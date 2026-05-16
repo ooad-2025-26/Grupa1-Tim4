@@ -1,20 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace SakuraWeb.Models
 {
-    public class Korisnik
+    public class Korisnik : IdentityUser
     {
-        [Key]
-        public int id { get; set; }
+        //[Key]
+        //public string id { get; set; }
         public string korisnickoIme { get; set; }
         public string emailAdresa { get; set; }
         public string lozinka { get; set; }
         public bool jePretplacenNaNewsletter { get; set; }
         public Uloga ulogaKorisnika { get; set; }
 
-        public Korisnik(int id, string korisnickoIme, string emailAdresa, string lozinka, bool jePretplacenNaNewsletter, Uloga ulogaKorisnika)
+        public Korisnik(/*string id,*/ string korisnickoIme, string emailAdresa, string lozinka, bool jePretplacenNaNewsletter, Uloga ulogaKorisnika)
         {
-            this.id = id;
+            //this.id = id;
             this.korisnickoIme = korisnickoIme;
             this.emailAdresa = emailAdresa;
             this.lozinka = lozinka;
@@ -24,7 +25,7 @@ namespace SakuraWeb.Models
 
         public Korisnik()
         {
-            this.id = -1;
+            /*this.id = string.Empty;*/
             this.korisnickoIme = string.Empty;
             this.emailAdresa = string.Empty;
             this.lozinka = string.Empty;

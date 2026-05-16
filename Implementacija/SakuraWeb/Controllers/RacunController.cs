@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SakuraWeb.Data;
 using SakuraWeb.Models;
 
@@ -26,7 +27,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Racun/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
@@ -34,7 +35,7 @@ namespace SakuraWeb.Controllers
             }
 
             var korisnik = await _context.korisnici
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (korisnik == null)
             {
                 return NotFound();
@@ -86,9 +87,9 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,korisnickoIme,emailAdresa,lozinka,jePretplacenNaNewsletter,ulogaKorisnika")] Korisnik korisnik)
+        public async Task<IActionResult> Edit(string id, [Bind("id,korisnickoIme,emailAdresa,lozinka,jePretplacenNaNewsletter,ulogaKorisnika")] Korisnik korisnik)
         {
-            if (id != korisnik.id)
+            if (id != korisnik.Id)
             {
                 return NotFound();
             }
@@ -102,7 +103,8 @@ namespace SakuraWeb.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KorisnikExists(korisnik.id))
+                    //if (!KorisnikExists(korisnik.id))
+                    if(!korisnik.Id.IsNullOrEmpty())
                     {
                         return NotFound();
                     }
@@ -117,7 +119,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Racun/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
             {
@@ -125,7 +127,7 @@ namespace SakuraWeb.Controllers
             }
 
             var korisnik = await _context.korisnici
-                .FirstOrDefaultAsync(m => m.id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (korisnik == null)
             {
                 return NotFound();
@@ -149,9 +151,9 @@ namespace SakuraWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KorisnikExists(int id)
+        private bool KorisnikExists(string id)
         {
-            return _context.korisnici.Any(e => e.id == id);
+            return _context.korisnici.Any(e => e.Id == id);
         }
     }
 }

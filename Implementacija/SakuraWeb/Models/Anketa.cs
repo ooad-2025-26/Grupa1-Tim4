@@ -22,7 +22,7 @@ namespace SakuraWeb.Models
 
 
         [ForeignKey("Korisnik")]
-        public int korisnikId { get; set; }
+        public string korisnikId { get; set; }
         public Korisnik korisnik { get; set; }
     }
 }

@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SakuraWeb.Models;
 
 namespace SakuraWeb.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext : IdentityDbContext<Korisnik>//IdentityDbContext(options)
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
         public DbSet<Models.Anketa> ankete { get; set; }
         public DbSet<Models.Benefit> benefiti { get; set; }
         public DbSet<Models.Korisnik> korisnici { get; set; }
@@ -25,6 +30,14 @@ namespace SakuraWeb.Data
             modelBuilder.Entity<Models.Anketa>().ToTable("Ankete");
             modelBuilder.Entity<Models.Benefit>().ToTable("Benefiti");
             modelBuilder.Entity<Models.Korisnik>().ToTable("Korisnici");
+            modelBuilder.Entity<Korisnik>()
+                .Property(e => e.korisnickoIme)
+                .HasMaxLength(250);
+            modelBuilder.Entity<Korisnik>()
+                .Property(e => e.emailAdresa)
+                .HasMaxLength(250);
+
+
             modelBuilder.Entity<Models.Newsletter>().ToTable("Newsletteri");
             modelBuilder.Entity<Models.Odgovor>().ToTable("Odgovori");
             modelBuilder.Entity<Models.Pitanje>().ToTable("Pitanja");
