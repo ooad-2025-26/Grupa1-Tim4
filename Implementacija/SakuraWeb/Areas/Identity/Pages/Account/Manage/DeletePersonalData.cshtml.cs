@@ -14,13 +14,13 @@ namespace SakuraWeb.Areas.Identity.Pages.Account.Manage;
 
 public class DeletePersonalDataModel : PageModel
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<Models.Korisnik> _userManager;
+    private readonly SignInManager<Models.Korisnik> _signInManager;
     private readonly ILogger<DeletePersonalDataModel> _logger;
 
     public DeletePersonalDataModel(
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
+        UserManager<Models.Korisnik> userManager,
+        SignInManager<Models.Korisnik> signInManager,
         ILogger<DeletePersonalDataModel> logger)
     {
         _userManager = userManager;

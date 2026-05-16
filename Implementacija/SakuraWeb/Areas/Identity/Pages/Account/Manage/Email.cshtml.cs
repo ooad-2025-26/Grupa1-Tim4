@@ -17,13 +17,13 @@ namespace SakuraWeb.Areas.Identity.Pages.Account.Manage;
 
 public class EmailModel : PageModel
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<Models.Korisnik> _userManager;
+    private readonly SignInManager<Models.Korisnik> _signInManager;
     private readonly IEmailSender _emailSender;
 
     public EmailModel(
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
+        UserManager<Models.Korisnik> userManager,
+        SignInManager<Models.Korisnik> signInManager,
         IEmailSender emailSender)
     {
         _userManager = userManager;
@@ -73,7 +73,7 @@ public class EmailModel : PageModel
         public string NewEmail { get; set; } = default!;
     }
 
-    private async Task LoadAsync(ApplicationUser user)
+    private async Task LoadAsync(Models.Korisnik user)
     {
         var email = await _userManager.GetEmailAsync(user);
         Email = email;

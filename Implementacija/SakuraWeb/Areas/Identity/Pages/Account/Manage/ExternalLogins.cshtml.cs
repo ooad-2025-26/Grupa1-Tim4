@@ -15,14 +15,14 @@ namespace SakuraWeb.Areas.Identity.Pages.Account.Manage;
 
 public class ExternalLoginsModel : PageModel
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IUserStore<ApplicationUser> _userStore;
+    private readonly UserManager<Models.Korisnik> _userManager;
+    private readonly SignInManager<Models.Korisnik> _signInManager;
+    private readonly IUserStore<Models.Korisnik> _userStore;
 
     public ExternalLoginsModel(
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
-        IUserStore<ApplicationUser> userStore)
+        UserManager<Models.Korisnik> userManager,
+        SignInManager<Models.Korisnik> signInManager,
+        IUserStore<Models.Korisnik> userStore)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -68,7 +68,7 @@ public class ExternalLoginsModel : PageModel
             .ToList();
 
         string? passwordHash = null;
-        if (_userStore is IUserPasswordStore<ApplicationUser> userPasswordStore)
+        if (_userStore is IUserPasswordStore<Models.Korisnik> userPasswordStore)
         {
             passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
         }

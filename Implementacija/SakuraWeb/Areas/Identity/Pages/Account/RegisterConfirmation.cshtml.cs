@@ -17,10 +17,10 @@ namespace SakuraWeb.Areas.Identity.Pages.Account;
 [AllowAnonymous]
 public class RegisterConfirmationModel : PageModel
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<Models.Korisnik> _userManager;
     private readonly IEmailSender _sender;
 
-    public RegisterConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender sender)
+    public RegisterConfirmationModel(UserManager<Models.Korisnik> userManager, IEmailSender sender)
     {
         _userManager = userManager;
         _sender = sender;

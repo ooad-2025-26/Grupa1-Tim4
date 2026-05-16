@@ -16,13 +16,13 @@ namespace SakuraWeb.Areas.Identity.Pages.Account;
 
 public class LoginWith2faModel : PageModel
 {
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<Models.Korisnik> _signInManager;
+    private readonly UserManager<Models.Korisnik> _userManager;
     private readonly ILogger<LoginWith2faModel> _logger;
 
     public LoginWith2faModel(
-        SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager,
+        SignInManager<Models.Korisnik> signInManager,
+        UserManager<Models.Korisnik> userManager,
         ILogger<LoginWith2faModel> logger)
     {
         _signInManager = signInManager;

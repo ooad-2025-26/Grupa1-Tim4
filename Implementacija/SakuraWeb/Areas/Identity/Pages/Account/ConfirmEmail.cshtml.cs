@@ -16,9 +16,9 @@ namespace SakuraWeb.Areas.Identity.Pages.Account;
 
 public class ConfirmEmailModel : PageModel
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<Models.Korisnik> _userManager;
 
-    public ConfirmEmailModel(UserManager<ApplicationUser> userManager)
+    public ConfirmEmailModel(UserManager<Models.Korisnik> userManager)
     {
         _userManager = userManager;
     }

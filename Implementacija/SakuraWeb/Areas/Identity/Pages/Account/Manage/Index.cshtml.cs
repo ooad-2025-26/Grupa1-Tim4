@@ -15,12 +15,12 @@ namespace SakuraWeb.Areas.Identity.Pages.Account.Manage;
 
 public class IndexModel : PageModel
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<Models.Korisnik> _userManager;
+    private readonly SignInManager<Models.Korisnik> _signInManager;
 
     public IndexModel(
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        UserManager<Models.Korisnik> userManager,
+        SignInManager<Models.Korisnik> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -61,7 +61,7 @@ public class IndexModel : PageModel
         public string? PhoneNumber { get; set; }
     }
 
-    private async Task LoadAsync(ApplicationUser user)
+    private async Task LoadAsync(Models.Korisnik user)
     {
         var userName = await _userManager.GetUserNameAsync(user);
         var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
