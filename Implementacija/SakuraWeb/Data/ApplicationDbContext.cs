@@ -1,13 +1,19 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SakuraWeb.Models;
 
 namespace SakuraWeb.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
         public DbSet<Models.Anketa> ankete { get; set; }
         public DbSet<Models.Benefit> benefiti { get; set; }
-        public DbSet<Models.Korisnik> korisnici { get; set; }
+        //public DbSet<Models.Korisnik> korisnici { get; set; }
+        public DbSet<Models.ApplicationUser> korisnici { get; set; }
         public DbSet<Models.Newsletter> newsletteri { get; set; }
         public DbSet<Models.Odgovor> odgovori { get; set; }
         public DbSet<Models.Pitanje> pitanja { get; set; }
@@ -24,7 +30,8 @@ namespace SakuraWeb.Data
 
             modelBuilder.Entity<Models.Anketa>().ToTable("Ankete");
             modelBuilder.Entity<Models.Benefit>().ToTable("Benefiti");
-            modelBuilder.Entity<Models.Korisnik>().ToTable("Korisnici");
+            modelBuilder.Entity<Models.ApplicationUser>().ToTable("Korisnici");
+            //modelBuilder.Entity<Models.Korisnik>().ToTable("Korisnici");
             modelBuilder.Entity<Models.Newsletter>().ToTable("Newsletteri");
             modelBuilder.Entity<Models.Odgovor>().ToTable("Odgovori");
             modelBuilder.Entity<Models.Pitanje>().ToTable("Pitanja");
@@ -35,6 +42,12 @@ namespace SakuraWeb.Data
             modelBuilder.Entity<Models.Rezervacija>().ToTable("Rezervacije");
             modelBuilder.Entity<Models.Sastojak>().ToTable("Sastojci");
             modelBuilder.Entity<Models.Usluga>().ToTable("Usluge");
+
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(e => e.jePretplacenNaNewsletter);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .Property(e => e.ulogaKorisnika);
         }
     }
 }

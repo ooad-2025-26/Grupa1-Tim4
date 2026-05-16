@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿//using System.ComponentModel.DataAnnotations;
 
 namespace SakuraWeb.Models
 {
     public class Korisnik
     {
-        [Key]
+        //[Key]
         public int id { get; set; }
         public string korisnickoIme { get; set; }
         public string emailAdresa { get; set; }

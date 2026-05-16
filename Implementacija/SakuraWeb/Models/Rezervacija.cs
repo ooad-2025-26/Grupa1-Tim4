@@ -13,8 +13,8 @@ namespace SakuraWeb.Models
         public int ocjena { get; set; }
 
         [ForeignKey("Korisnik")]
-        public int korisnikId { get; set; }
-        public Korisnik korisnik { get; set; }
+        public string korisnikId { get; set; }
+        public ApplicationUser korisnik { get; set; }
 
         [ForeignKey("Usluga")]
         public int uslugaId { get; set; }
@@ -26,13 +26,13 @@ namespace SakuraWeb.Models
             datumRezervacije = default;
             vrijemeTermina = default;
             otkazana = false;
-            korisnikId = 0;
+            korisnikId = string.Empty;
             korisnik = null;
             uslugaId = 0;
             usluga = null;
         }
 
-        public Rezervacija(int id, DateTime datumRezervacije, DateTime vrijemeTermina, bool otkazana, int korisnikId, Korisnik korisnik, int uslugaId, Usluga usluga)
+        public Rezervacija(int id, DateTime datumRezervacije, DateTime vrijemeTermina, bool otkazana, string korisnikId, ApplicationUser korisnik, int uslugaId, Usluga usluga)
         {
             this.id = id;
             this.datumRezervacije = datumRezervacije;

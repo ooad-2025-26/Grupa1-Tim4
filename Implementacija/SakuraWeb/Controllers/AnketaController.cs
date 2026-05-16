@@ -65,7 +65,7 @@ namespace SakuraWeb.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", anketa.korisnikId);
+            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", anketa.ApplicationUserId);
             return View(anketa);
         }
 
@@ -82,7 +82,7 @@ namespace SakuraWeb.Controllers
             {
                 return NotFound();
             }
-            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", anketa.korisnikId);
+            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", anketa.ApplicationUserId);
             return View(anketa);
         }
 
@@ -118,7 +118,7 @@ namespace SakuraWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", anketa.korisnikId);
+            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", anketa.ApplicationUserId);
             return View(anketa);
         }
 
