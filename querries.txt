@@ -1,0 +1,7 @@
+insert into AspNetRoles (Id, Name, NormalizedName) values (1, 'Administrator', 'ADMINISTRATOR'), (2, 'Korisnik', 'KORISNIK'), (3, 'Zaposlenik', 'ZAPOSLENIK'), (4, 'Gost', 'GOST');
+select * from AspNetRoles;
+
+insert into AspNetUserRoles values ('755f2b80-051f-453c-86fe-ff4074244971',2), ('c877ca42-c782-4f9a-be34-7b4a6b472db5',1);
+select * from AspNetUserRoles ;
+
+

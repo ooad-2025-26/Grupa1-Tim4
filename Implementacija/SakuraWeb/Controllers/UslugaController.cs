@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using SakuraWeb.Models;
 
 namespace SakuraWeb.Controllers
 {
+    [Authorize (Roles ="Korisnik, Administrator, Zaposlenik")]
     public class UslugaController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,6 +28,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga/Details/5
+        [Authorize(Roles = "Korisnik, Administrator, Zaposlenik")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +47,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga/Create
+        [Authorize(Roles = "Korisnik, Administrator, Zaposlenik")]
         public IActionResult Create()
         {
             return View();
@@ -66,6 +70,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga/Edit/5
+        [Authorize(Roles = "Korisnik, Administrator, Zaposlenik")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -117,6 +122,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga/Delete/5
+        [Authorize(Roles = "Korisnik, Administrator, Zaposlenik")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

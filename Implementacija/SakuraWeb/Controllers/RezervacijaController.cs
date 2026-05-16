@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SakuraWeb.Data;
 using SakuraWeb.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SakuraWeb.Controllers
 {
@@ -20,6 +21,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija
+        [Authorize(Roles = "Administrator, Korisnik, Zaposlenik")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.rezervacije.Include(r => r.korisnik).Include(r => r.usluga);
@@ -27,6 +29,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Details/5
+        [Authorize(Roles = "Administrator, Korisnik, Zaposlenik")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +50,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Create
+        [Authorize(Roles = "Korisnik")]
         public IActionResult Create()
         {
             ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id");
@@ -73,6 +77,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Edit/5
+        [Authorize(Roles = "Administrator, Korisnik")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -128,6 +133,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Delete/5
+        [Authorize(Roles = "Administrator, Korisnik")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
