@@ -9,6 +9,9 @@ namespace SakuraWeb.Models
         public int id { get; set; }
         [ForeignKey("Anketa")]
         public int anketaId { get; set; }
+
+        public Anketa anketa { get; set; }
+
         public string sadrzaj { get; set; }
 
         public Pitanje()

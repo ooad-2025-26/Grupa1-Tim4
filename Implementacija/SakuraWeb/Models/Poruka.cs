@@ -9,6 +9,8 @@ namespace SakuraWeb.Models
         public int id { get; set; }
         [ForeignKey("Newsletter")]
         public int newsletterId { get; set; }
+
+        public Newsletter newsletter { get; set; }
         public string naziv { get; set; }
         public string tekst { get; set; }
 

@@ -9,6 +9,9 @@ namespace SakuraWeb.Models
         public int id { get; set; }
         [ForeignKey("Pitanje")]
         public int pitanjeId { get; set; }
+
+        public Pitanje pitanje { get; set; }
+
         public string sadrzaj { get; set; }
         public int poeni { get; set; }
         
