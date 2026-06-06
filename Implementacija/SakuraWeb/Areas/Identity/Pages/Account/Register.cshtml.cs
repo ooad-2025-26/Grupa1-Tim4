@@ -74,6 +74,12 @@ public class RegisterModel : PageModel
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
+
+        [Required]
+        [Display(Name = "Korisničko ime")]
+        public string KorisnickoIme { get; set; } = default!;
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -97,6 +103,9 @@ public class RegisterModel : PageModel
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string? ConfirmPassword { get; set; }
+
+        [Display(Name = "Pretplatite se na newsletter")]
+        public bool PretplatiteSeNaNewsletter { get; set; }
     }
 
 
@@ -114,8 +123,9 @@ public class RegisterModel : PageModel
         {
             var user = CreateUser();
 
-            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+            await _userStore.SetUserNameAsync(user, Input.KorisnickoIme, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            user.jePretplacenNaNewsletter = Input.PretplatiteSeNaNewsletter;
             var result = await _userManager.CreateAsync(user, Input.Password);
 
             if (result.Succeeded)
@@ -131,8 +141,8 @@ public class RegisterModel : PageModel
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme)!;
 
-                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                await _emailSender.SendEmailAsync(Input.Email, "[Sakura] Potvrdite vašu Email adresu",
+                    $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Kliknite ovdje</a> da bi potvrdili vaš račun.");
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
