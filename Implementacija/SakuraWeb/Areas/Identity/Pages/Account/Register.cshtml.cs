@@ -124,23 +124,27 @@ public class RegisterModel : PageModel
             var user = CreateUser();
 
             await _userStore.SetUserNameAsync(user, Input.KorisnickoIme, CancellationToken.None);
+            user.korisnickoIme = Input.KorisnickoIme;
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            user.emailAdresa = Input.Email;
             user.jePretplacenNaNewsletter = Input.PretplatiteSeNaNewsletter;
             var result = await _userManager.CreateAsync(user, Input.Password);
-
+            user.lozinka = user.PasswordHash;
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
 
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme)!;
-
+                
                 await _emailSender.SendEmailAsync(Input.Email, "[Sakura] Potvrdite vašu Email adresu",
                     $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Kliknite ovdje</a> da bi potvrdili vaš račun.");
 
