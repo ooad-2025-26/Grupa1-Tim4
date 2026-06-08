@@ -1,11 +1,51 @@
 @page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Registracija";
 }
 
-<h1>@ViewData["Title"]</h1>
-
+<header class="sakura-header-grad text-center" style="padding: 40px 0;">
+    <h1 class="stack-sans-headline-h1"><b>Postanite klijent salona Sakura.</b></h1>
+    <p class="subheading">Već ste klijent? <a href="~/Identity/Account/Login">Prijavite se</a></p>
+</header>
+<div class="container" style="max-width:40%;">
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="wittgenstein">
+            <p>
+                <label asp-for="Input.Email">Email adresa: </label>
+                <input asp-for="Input.Email" class="form-control mb-3" aria-required="true" placeholder="Email adresa..." />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </p>
+            <p>
+                <label asp-for="Input.KorisnickoIme">Korisničko ime:</label>
+                <input asp-for="Input.KorisnickoIme" class="form-control mb-3" placeholder="Korisničko ime...">
+            </p>
+            <p>
+                <label asp-for="Input.Password">Lozinka:</label>
+                <input asp-for="Input.Password" class="form-control mb-3" aria-required="true" placeholder="Lozinka..."/>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </p>
+            <p>
+                <label asp-for="Input.ConfirmPassword">Potvrdite lozinku:</label>
+                <input asp-for="Input.ConfirmPassword" class="form-control mb-3" autocomplete="new-password" aria-required="true" placeholder="Lozinka..." />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </p>
+            <!--
+            <input type="checkbox" id="newsletter">
+            <label for="newsletter" style="margin-left:10px;">Želim primati obavijesti o novim proizvodima, uslugama i popustima.</label>
+            -->
+            <p>
+                <input asp-for="Input.PretplatiteSeNaNewsletter" type="checkbox" />
+                <label asp-for="Input.PretplatiteSeNaNewsletter" class="form-check-label" style="margin-left:10px;">
+                    Želim primati obavijesti o novim proizvodima, uslugama i popustima.
+                </label>
+            </p>
+        </div>
+        <button id="registerSubmit" type="submit" class="sakura-btn-dark" style="width:100%; margin-top:20px">Registrujte se</button>
+    </form>
+</div>
+<!--
 <div class="row">
     <div class="col-md-4">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
@@ -61,6 +101,7 @@
         </section>
     </div>
 </div>
+-->
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -2,25 +2,29 @@
 @inject SignInManager<Korisnik> SignInManager
 @inject UserManager<Korisnik> UserManager
 
-<ul class="navbar-nav">
+
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
+    <div class="dropdown">
+        <a class="nav-link d-flex align-items-center gap-1 btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="stack-sans-headline-username">@User.Identity?.Name</span>
+            <img src="img/User.svg" style="width: 40px; height: 40px; margin-left: 4px;">
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="#">Vaš profil</a>
+            <a class="dropdown-item" href="#">Vaši termini</a>
+            <form class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-dark">Odjavite se</button>
+            </form>
+            <!--<a class="dropdown-item" href="#">Odjavite se</a>-->
+        </div>
+    </div>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <div class="d-flex gap-2">
+        <a class="btn sakura-btn-dimmed" asp-area="Identity" asp-page="/Account/Login">Prijava</a>
+        <a class="btn sakura-btn-dark" asp-area="Identity" asp-page="/Account/Register">Registracija</a>
+    </div>
 }
-</ul>
+

@@ -30,8 +30,9 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseRouting();
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+    app.UseRouting();
 
 app.UseAuthorization();
 
