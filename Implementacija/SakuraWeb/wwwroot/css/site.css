@@ -490,20 +490,47 @@ input[type="checkbox"] {
 }
 
 .anketa-hero {
-    min-height: 430px;
+    min-height: 50vh;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0;
+    text-align: center;
+    background: #F6DFEC url("/img/AnketaBG.svg") bottom center no-repeat;
+    background-size: 130% auto;
+}
+
+.anketa-hero__content {
+    width: 100%;
+    max-width: 100%;
+}
+
+.anketa-hero h1 {
+    height: 350px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    padding: 72px 24px;
-    text-align: center;
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.74)),
-        url("/img/gabrielle-henderson-GaA5PrMn-co-unsplash 1.png");
+    margin: 0;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,.35);
+    background: linear-gradient( rgba(255,255,255,.15), rgba(255,255,255,.15) ), url("/img/gabrielle-henderson-GaA5PrMn-co-unsplash 1.png");
     background-size: cover;
     background-position: center;
 }
 
+.anketa-lead {
+    margin: 70px auto 0;
+    max-width: 700px;
+}
+
+.anketa-primary-btn {
+    margin-top: 40px;
+    margin-bottom: 180px;
+    
+}
+
 .anketa-hero__content {
-    width: min(760px, 100%);
+    width: 100%;
+    max-width: none;
 }
 
 .anketa-eyebrow {
@@ -532,6 +559,7 @@ input[type="checkbox"] {
 .anketa-primary-btn {
     margin-top: 30px;
     min-width: 168px;
+    height: 50px;
     font-size: 22px !important;
     border-radius: 8px !important;
 }
@@ -545,16 +573,9 @@ input[type="checkbox"] {
 }
 
 .anketa-question-card {
-    width: min(980px, 100%);
-    margin: 0 auto;
-    padding: 54px 48px 38px;
-    text-align: center;
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.72)),
-        linear-gradient(135deg, var(--anketa-soft-pink), #ffffff 48%, var(--anketa-soft-pink));
-    border: 1px solid rgba(60, 57, 57, 0.12);
-    border-radius: 8px;
-    box-shadow: 0 24px 60px rgba(60, 57, 57, 0.10);
+    background: unset;
+    border: 0;
+    box-shadow: none;
 }
 
 .anketa-question-card h2 {
@@ -600,6 +621,7 @@ input[type="checkbox"] {
     font-family: "Stack Sans Headline", sans-serif;
     font-size: 24px !important;
     text-decoration: none !important;
+    height: 50px !important;
 }
 
 .anketa-next-btn {
@@ -609,6 +631,7 @@ input[type="checkbox"] {
 .anketa-back-btn {
     border: 2px solid rgba(25, 22, 22, 0.18) !important;
     background: rgba(255, 255, 255, 0.72) !important;
+    height: 50px !important;
 }
 
 .anketa-next-btn:disabled {
@@ -645,6 +668,7 @@ input[type="checkbox"] {
     gap: 14px;
     justify-content: center;
     margin-top: 34px;
+    
 }
 
 .anketa-product-card {
