@@ -19,15 +19,37 @@
     <div class="header">
         <img class="" src="~/img/Header.svg" />
     </div>
+    @{
+        string ActiveClass(string link)
+        {
+            var current = ViewContext.HttpContext.Request.Path.Value ?? string.Empty;
+            var target = link ?? string.Empty;
+            if (string.IsNullOrEmpty(target)) return "sakura-lightgray";
+            // Ensure a leading / so comparisons are consistent
+            if (!target.StartsWith('/'))
+            {
+                target = Url.Content(target);
+            }
+            if (target == "/")
+            {
+                return current == "/" ? "sakura-btn-active" : "sakura-lightgray";
+            }
+            if (current.Equals(target, System.StringComparison.OrdinalIgnoreCase) || current.StartsWith(target + "/", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return "sakura-btn-active";
+            }
+            return "sakura-lightgray";
+        }
+    }
     <div class="navbar navbar-expand">
         <div class="container-fluid d-flex justify-content-between">
             <!-- LEFT -->
             <div class="d-flex gap-2">
-                <button class="nav-link sakura-btn-active" href="#">Početna</button>
-                <a class="nav-link sakura-lightgray" href="#">Proizvodi</a>
-                <a class="nav-link sakura-lightgray" href="#">Usluge</a>
-                <a class="nav-link sakura-lightgray" href="#">Anketa</a>
-                <a class="nav-link sakura-lightgray" href="#">Newsletter</a>
+                <a class="nav-link @(ActiveClass(Url.Action("Index","Home")))" asp-controller="Home" asp-action="Index">Početna</a>
+                <a class="nav-link @(ActiveClass(Url.Action("Index","Proizvodi")))" asp-controller="Proizvodi" asp-action="Index">Proizvodi</a>
+                <a class="nav-link @(ActiveClass(Url.Action("Index","Usluga")))" asp-controller="Usluga" asp-action="Index">Usluge</a>
+                <a class="nav-link @(ActiveClass(Url.Action("Index","Anketa")))" asp-controller="Anketa" asp-action="Index">Anketa</a>
+                <a class="nav-link @(ActiveClass(Url.Action("Index","Newsletter")))" asp-controller="Newsletter" asp-action="Index">Newsletter</a>
             </div>
 
             <!-- RIGHT -->
