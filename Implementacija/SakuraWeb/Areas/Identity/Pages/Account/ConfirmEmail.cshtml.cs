@@ -44,7 +44,7 @@ public class ConfirmEmailModel : PageModel
 
         code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
         var result = await _userManager.ConfirmEmailAsync(user, code);
-        StatusMessage = result.Succeeded ? "Vaša email adresa je potvrđena." : "Došlo je do greške prilikom potvrde vaše email adrese.";
+        StatusMessage = result.Succeeded ? "Vaša email adresa je potvrđena. Možete se prijaviti na svoj račun." : "Došlo je do greške prilikom potvrde vaše email adrese.";
         return Page();
     }
 }

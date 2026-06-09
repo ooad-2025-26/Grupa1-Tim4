@@ -17,13 +17,13 @@ builder.Services.AddDefaultIdentity<Korisnik>(options => {
     options.SignIn.RequireConfirmedAccount = true;
     options.Tokens.ProviderMap.Add("CustomEmailConfirmation",
         new TokenProviderDescriptor(
-            typeof(CustomEmailConfirmationTokenProvider<IdentityUser>)));
+            typeof(CustomEmailConfirmationTokenProvider<Korisnik>)));
     options.Tokens.EmailConfirmationTokenProvider = "CustomEmailConfirmation";
     }).AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddTransient<CustomEmailConfirmationTokenProvider<IdentityUser>>();
+builder.Services.AddTransient<CustomEmailConfirmationTokenProvider<Korisnik>>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 

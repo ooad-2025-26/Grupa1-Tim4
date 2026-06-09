@@ -73,7 +73,7 @@ public class ChangePasswordModel : PageModel
         /// </summary>
         [DataType(DataType.Password)]
         [Display(Name = "Confirm new password")]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Compare("NewPassword", ErrorMessage = "Lozinke se ne poklapaju.")]
         public string? ConfirmPassword { get; set; }
     }
 
@@ -114,12 +114,13 @@ public class ChangePasswordModel : PageModel
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            return Page();
+            StatusMessage = "Greška pri mijenjanju lozinke. Pokušajte ponovo.";
+            return RedirectToPage();
         }
 
         await _signInManager.RefreshSignInAsync(user);
         _logger.LogInformation("User changed their password successfully.");
-        StatusMessage = "Your password has been changed.";
+        StatusMessage = "Vaša lozinka je uspješno promijenjena.";
 
         return RedirectToPage();
     }

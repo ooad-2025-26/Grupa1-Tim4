@@ -30,7 +30,7 @@ public class IndexModel : PageModel
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
     ///     directly from your code. This API may change or be removed in future releases.
     /// </summary>
-    public string? Username { get; set; }
+    //public string? Username { get; set; }
 
     /// <summary>
     ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -52,25 +52,23 @@ public class IndexModel : PageModel
     /// </summary>
     public class InputModel
     {
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        [Phone]
-        [Display(Name = "Phone number")]
-        public string? PhoneNumber { get; set; }
+        [Required]
+        [Display(Name = "Korisničko ime")]
+        public string KorisnickoIme { get; set; } = default!;
+        [Display(Name = "Pretplatite se na newsletter")]
+        public bool PretplatiteSeNaNewsletter { get; set; }
     }
 
     private async Task LoadAsync(Models.Korisnik user)
     {
         var userName = await _userManager.GetUserNameAsync(user);
         var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-        Username = userName;
+        var pretplacen = user.jePretplacenNaNewsletter;
 
         Input = new InputModel
         {
-            PhoneNumber = phoneNumber
+            KorisnickoIme = userName,
+            PretplatiteSeNaNewsletter = pretplacen
         };
     }
 
@@ -100,7 +98,9 @@ public class IndexModel : PageModel
             return Page();
         }
 
-        var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
+
+        /*var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
         if (Input.PhoneNumber != phoneNumber)
         {
             var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
@@ -109,10 +109,29 @@ public class IndexModel : PageModel
                 StatusMessage = "Unexpected error when trying to set phone number.";
                 return RedirectToPage();
             }
+        }*/
+        if (Input.KorisnickoIme != user.korisnickoIme)
+        {
+            var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.KorisnickoIme);
+            if (!setUserNameResult.Succeeded)
+            {
+                StatusMessage = "Greška pri ažuriranju korisničkog imena.";
+                return RedirectToPage();
+            }
+        }
+        if (Input.PretplatiteSeNaNewsletter != user.jePretplacenNaNewsletter)
+        {
+            user.promjeniStanjePretplate(Input.PretplatiteSeNaNewsletter);
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+            {
+                StatusMessage = "Greška pri ažuriranju stanja pretplate na newsletter.";
+                return RedirectToPage();
+            }
         }
 
         await _signInManager.RefreshSignInAsync(user);
-        StatusMessage = "Your profile has been updated";
+        StatusMessage = "Vaš profil je uspješno ažuriran.";
         return RedirectToPage();
     }
 }
