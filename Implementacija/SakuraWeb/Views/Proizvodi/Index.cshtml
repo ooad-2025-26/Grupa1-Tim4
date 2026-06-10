@@ -19,14 +19,16 @@
     </div>
     <div class="proizvodi-container mx-auto row">
 @foreach (var item in Model) {
+    var naslov = item.naziv;
+    if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
         <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
             <div>
                 <img src="img/product-image-1.jpg">
-                    <p class="wittgenstein">@Html.DisplayNameFor(model => model.naziv)</p>
+                    <p class="wittgenstein">@naslov</p>
             </div>
             <div class="volumen-cijena">
-                    <span>@Html.DisplayNameFor(model => model.volumen) ml</span>
-                    <span>@Html.DisplayNameFor(model => model.cijena) KM</span>
+                    <span>@Html.DisplayFor(modelItem => item.volumen) ml</span>
+                    <span>@Html.DisplayFor(modelItem => item.cijena) KM</span>
             </div>
         </div>
 }
