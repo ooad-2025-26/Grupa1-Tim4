@@ -20,10 +20,9 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Anketa
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.ankete.Include(a => a.korisnik);
-            return View(await applicationDbContext.ToListAsync());
+            return View();
         }
 
         // GET: Anketa/Details/5

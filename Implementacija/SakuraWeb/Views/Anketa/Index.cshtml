@@ -1,47 +1,194 @@
-﻿@model IEnumerable<SakuraWeb.Models.Anketa>
+@model IEnumerable<SakuraWeb.Models.Anketa>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Anketa";
 }
 
-<h1>Index</h1>
+<section class="anketa-page">
+    <section class="anketa-hero anketa-view is-active" aria-labelledby="anketa-title" data-anketa-view="start">
+        <div class="anketa-hero__content">
+           
+            <h1 id="anketa-title" class="stack-sans-headline-h1">Tvoja savršena rutina</h1>
+            <p class="anketa-lead">Odgovori na nekoliko pitanja i pronađi proizvode koji najbolje odgovaraju tvojoj kosi.</p>
+            <button type="button" class="btn sakura-btn-dark anketa-primary-btn" data-anketa-next>Start</button>
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.poeni)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.vrijemePopunjavanja)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.korisnik)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.poeni)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.vrijemePopunjavanja)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.korisnik.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
+    </section>
+
+    <section class="anketa-question-section anketa-view" aria-labelledby="anketa-question-title-1" data-anketa-view="question">
+        <div class="anketa-question-card">
+            <span class="redni-broj-pitanja">1</span>
+            <p class="anketa-eyebrow">Pitanje 1 od 3</p>
+            <h2 id="anketa-question-title-1" class="stack-sans-headline-h2">Koji je oblik tvoje kose?</h2>
+
+            <fieldset class="anketa-options radio-options" aria-label="Oblik kose">
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="kovrđava" name="oblikKose" id="kovrđava">
+                    <label for="kovrđava">Kovrđava</label>
+                </div>
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="valovita" name="oblikKose" id="valovita">
+                    <label for="valovita">Valovita</label>
+                </div>
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="ravna" name="oblikKose" id="ravna">
+                    <label for="ravna">Ravna</label>
+                </div>
+            </fieldset>
+
+            <div class="anketa-question-actions">
+                <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
+                <button type="button" class="btn anketa-next-btn" data-anketa-next disabled>Sljedeće</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="anketa-question-section anketa-view" aria-labelledby="anketa-question-title-2" data-anketa-view="question">
+        <div class="anketa-question-card">
+            <span class="redni-broj-pitanja">2</span>
+            <p class="anketa-eyebrow">Pitanje 2 od 3</p>
+            <h2 id="anketa-question-title-2" class="stack-sans-headline-h2">Najveći problem?</h2>
+
+            <fieldset class="anketa-options radio-options" aria-label="problem">
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="masna kosa" name="problem" id="masna kosa">
+                    <label for="masna kosa">Masna kosa</label>
+                </div>
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="suha kosa" name="problem" id="suha kosa">
+                    <label for="suha kosa">Suha kosa</label>
+                </div>
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="ostećena" name="problem" id="oštećena">
+                    <label for="oštećena">Oštećena kosa</label>
+                </div>
+            </fieldset>
+
+            <div class="anketa-question-actions">
+                <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
+                <button type="button" class="btn anketa-next-btn" data-anketa-next disabled>Sljedeće</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="anketa-question-section anketa-view" aria-labelledby="anketa-question-title-3" data-anketa-view="question">
+        <div class="anketa-question-card">
+            <span class="redni-broj-pitanja">3</span>
+            <p class="anketa-eyebrow">Pitanje 3 od 3</p>
+            <h2 id="anketa-question-title-3" class="stack-sans-headline-h2">Koliko često koristis proizvode za njegu?</h2>
+
+            <fieldset class="anketa-options radio-options" aria-label="Ucestalost njege">
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="svaki-dan" name="ucestalostNjege" id="svaki-dan">
+                    <label for="svaki-dan">Svaki dan</label>
+                </div>
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="sedmicno" name="ucestalostNjege" id="sedmicno">
+                    <label for="sedmicno">Sedmično</label>
+                </div>
+                <div class="radio-option radio-option-anketa">
+                    <input type="radio" value="ponekad" name="ucestalostNjege" id="ponekad">
+                    <label for="ponekad">Ponekad</label>
+                </div>
+            </fieldset>
+
+            <div class="anketa-question-actions">
+                <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
+                <button type="button" class="btn anketa-next-btn" data-anketa-next disabled>Prikaži preporuku</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="anketa-result-section anketa-view" aria-labelledby="anketa-result-title" data-anketa-view="result">
+        <div class="anketa-result-heading">
+            <p class="anketa-eyebrow">Preporuka</p>
+            <h2 id="anketa-result-title" class="stack-sans-headline-h1">Tvoja rutina je spremna!</h2>
+        </div>
+
+        <div class="anketa-rutina">
+            <article class="anketa-product-card">
+                <span class="anketa-step">1</span>
+                <img src="~/img/image 50.png" alt="Genesis Bain Hydra-Fortifiant Shampoo">
+                <p>Genesis Bain Hydra-Fortifiant Shampoo</p>
+            </article>
+            <article class="anketa-product-card">
+                <span class="anketa-step">2</span>
+                <img src="~/img/image 51.png" alt="Genesis Fondant Renforcateur">
+                <p>Genesis Fondant Renforcateur</p>
+            </article>
+            <article class="anketa-product-card">
+                <span class="anketa-step">3</span>
+                <img src="~/img/image 52.png" alt="Genesis serum za kosu">
+                <p>Genesis Bain Hydra-Fortifiant Serum</p>
+            </article>
+        </div>
+
+        <div class="anketa-result-actions">
+            <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
+            <button type="button" class="btn sakura-btn-dark anketa-primary-btn" data-anketa-restart>Ponovi anketu</button>
+        </div>
+    </section>
+</section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const views = Array.from(document.querySelectorAll(".anketa-view"));
+            let currentIndex = 0;
+
+            const showView = (index) => {
+                currentIndex = index;
+                views.forEach((view, viewIndex) => {
+                    const isActive = viewIndex === currentIndex;
+                    view.classList.toggle("is-active", isActive);
+                    view.setAttribute("aria-hidden", String(!isActive));
+                });
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            };
+
+            const updateQuestionButton = (questionView) => {
+                if (questionView.dataset.anketaView !== "question") {
+                    return;
+                }
+                const checkedAnswer = questionView.querySelector("input[type='radio']:checked");
+                const nextButton = questionView.querySelector("[data-anketa-next]");
+                if (nextButton) {
+                    nextButton.disabled = !checkedAnswer;
+                }
+            };
+
+            views.forEach((view) => {
+                view.querySelectorAll("input[type='radio']").forEach((input) => {
+                    input.addEventListener("change", () => updateQuestionButton(view));
+                });
+                updateQuestionButton(view);
+            });
+
+            document.querySelectorAll("[data-anketa-next]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const activeView = views[currentIndex];
+                    if (activeView.dataset.anketaView === "question" && !activeView.querySelector("input[type='radio']:checked")) {
+                        return;
+                    }
+                    showView(Math.min(currentIndex + 1, views.length - 1));
+                });
+            });
+
+            document.querySelectorAll("[data-anketa-back]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    showView(Math.max(currentIndex - 1, 0));
+                });
+            });
+
+            document.querySelector("[data-anketa-restart]")?.addEventListener("click", () => {
+                document.querySelectorAll(".anketa-view input[type='radio']").forEach((input) => {
+                    input.checked = false;
+                });
+                views.forEach(updateQuestionButton);
+                showView(0);
+            });
+
+            showView(0);
+        })();
+    </script>
 }
-    </tbody>
-</table>
