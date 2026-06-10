@@ -8,10 +8,10 @@
     <div class="dropdown">
         <a class="nav-link d-flex align-items-center gap-1 btn dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="stack-sans-headline-username">@User.Identity?.Name</span>
-            <img src="img/User.svg" style="width: 40px; height: 40px; margin-left: 4px;">
+            <img src="/img/User.svg" style="width: 40px; height: 40px; margin-left: 4px;">
         </a>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="#">Vaš profil</a>
+            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Vaš profil</a>
             <a class="dropdown-item" href="#">Vaši termini</a>
             <form class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="nav-link btn btn-link text-dark">Odjavite se</button>

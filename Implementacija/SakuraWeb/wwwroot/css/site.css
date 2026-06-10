@@ -472,6 +472,14 @@ input[type="checkbox"] {
     width: 33.333%;
 }
 
+.postavke-pozadina {
+    width: 100%;
+    height: 100vh;
+    background-image: url("/img/Rectangle113.svg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
 .anketa-page {
     --anketa-soft-pink: #f7c2d6;
     --anketa-blush: #fde9f1;

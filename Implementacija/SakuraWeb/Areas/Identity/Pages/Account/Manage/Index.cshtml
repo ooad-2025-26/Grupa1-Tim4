@@ -1,27 +1,26 @@
 @page
 @model IndexModel
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Postavke računa";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
-
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
+<div class="postavke-pozadina">
+    <div class="container" style="max-width:40%;">
+        <br><h1 class="stack-sans-headline-h1"><b>@ViewData["Title"]</b></h1><br>
         <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+            <div class="wittgenstein">
+                <!--<label for="email">Email adresa:</label>
+                <input type="email" class="form-control mb-3" id="email" placeholder="Email adresa...">-->
+                <label asp-for="Input.KorisnickoIme">Korisničko ime:</label>
+                <input type="text" class="form-control mb-3" asp-for="Input.KorisnickoIme" placeholder="Korisničko ime...">
+                <p>Ovdje možete promijeniti status vaše pretplate na newsletter:</p>
+                <input type="checkbox" asp-for="Input.PretplatiteSeNaNewsletter" checked="@(Model.Input.PretplatiteSeNaNewsletter ? "checked" : null)" />
+                <label asp-for="Input.PretplatiteSeNaNewsletter" style="margin-left:10px;">Želim primati obavijesti o novim proizvodima, uslugama i popustima.</label>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+            <button type="submit" id="update-profile-button" class="sakura-btn-dark" style="width:100%; margin-top:20px">Ažuriraj</button>
         </form>
+        
+        <p class="wittgenstein mt-3">Želite li promijeniti lozinku? Kliknite <a asp-page="./ChangePassword">ovdje</a>.</p>
     </div>
 </div>
 
