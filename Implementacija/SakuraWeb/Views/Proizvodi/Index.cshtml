@@ -4,11 +4,57 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<header class="sakura-header-grad push-it-down">
+    <h1 class="stack-sans-headline-h1 sakura-hotpink text-center">Proizvodi</h1>
+</header>
+
+
+
+<div class="container">
+    <div class="d-flex justify-content-end">
+        <div class="d-3">
+            <button class="sakura-btn-dimmed">Filtriraj</button>
+            <button class="sakura-btn-dark">Sortiraj</button>
+        </div>
+    </div>
+    <div class="proizvodi-container mx-auto row">
+        <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
+            <div>
+                <img src="img/product-image-1.jpg">
+                <p class="wittgenstein">Densifique Bain Densité Šampon</p>
+            </div>
+            <div class="volumen-cijena">
+                <span>250ml</span>
+                <span>93 KM</span>
+            </div>
+        </div>
+        <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
+            <div>
+                <img src="img/product-image-2.jpg">
+                <p class="wittgenstein">Densifique Fondant Densité Rege...</p>
+            </div>
+            <div class="volumen-cijena">
+                <span>200ml</span>
+                <span>110 KM</span>
+            </div>
+        </div>
+        <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
+            <div>
+                <img src="img/product-image-3.jpg">
+                <p class="wittgenstein">Densifique Densimorphose® Pjena</p>
+            </div>
+            <div class="volumen-cijena">
+                <span>150ml</span>
+                <span>50 KM</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
