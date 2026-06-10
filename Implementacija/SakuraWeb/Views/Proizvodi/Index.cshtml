@@ -18,17 +18,19 @@
         </div>
     </div>
     <div class="proizvodi-container mx-auto row">
+@foreach (var item in Model) {
         <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
             <div>
                 <img src="img/product-image-1.jpg">
-                <p class="wittgenstein">Densifique Bain Densité Šampon</p>
+                    <p class="wittgenstein">@Html.DisplayNameFor(model => model.naziv)</p>
             </div>
             <div class="volumen-cijena">
-                <span>250ml</span>
-                <span>93 KM</span>
+                    <span>@Html.DisplayNameFor(model => model.volumen)</span>
+                    <span>@Html.DisplayNameFor(model => model.cijena) KM</span>
             </div>
         </div>
-        <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
+}
+        <!--<div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
             <div>
                 <img src="img/product-image-2.jpg">
                 <p class="wittgenstein">Densifique Fondant Densité Rege...</p>
@@ -47,7 +49,7 @@
                 <span>150ml</span>
                 <span>50 KM</span>
             </div>
-        </div>
+        </div>-->
     </div>
 </div>
 
