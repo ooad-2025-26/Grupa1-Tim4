@@ -801,3 +801,51 @@ input[type="checkbox"] {
         padding: 8px 12px;
     }
 }
+
+.scroll-container {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.proizvod-card {
+    height: 320px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    justify-content: space-between;
+    background: white;
+}
+
+.image-wrapper {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+    .image-wrapper img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+.wittgenstein {
+    font-size: 14px;
+    text-align: center;
+    min-height: 40px;
+}
+
+.wittgenstein {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.volumen-cijena {
+    font-weight: bold;
+    text-align: center;
+}
