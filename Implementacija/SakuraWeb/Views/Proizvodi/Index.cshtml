@@ -20,21 +20,25 @@
             <button class="sakura-btn-dark">Sortiraj</button>
         </div>
     </div>
-    <div class="proizvodi-container mx-auto row">
+    <div class="proizvodi-container mx-auto row scroll-container">
 @foreach (var item in Model) {
     var naslov = item.naziv;
-    if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
-        <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
-            <div>
-                <!--<img src="img/product-image-1.jpg">-->
-                <img src="~/img/@item.slikaPutanja" alt="@item.naziv">
-                    <p class="wittgenstein">@naslov</p>
+    //if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
+            <div class="col-sm-3 p-2">
+                <div class="proizvod-card d-flex flex-column align-items-center">
+
+                    <div class="image-wrapper">
+                        <img src="~/img/@item.slikaPutanja" alt="@item.naziv">
+                    </div>
+
+                    <p class="wittgenstein text-center">@naslov</p>
+
+                    <div class="volumen-cijena mt-auto">
+                        <span>@item.cijena KM</span>
+                    </div>
+
+                </div>
             </div>
-            <div class="volumen-cijena">
-                    <span>@Html.DisplayFor(modelItem => item.volumen) ml</span>
-                    <span>@Html.DisplayFor(modelItem => item.cijena) KM</span>
-            </div>
-        </div>
 }
         <!--<div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
             <div>
