@@ -34,7 +34,7 @@
                     <p class="wittgenstein text-center">@naslov</p>
 
                     <div class="volumen-cijena mt-auto">
-                        <span>@item.cijena KM</span>
+                        <span> <a asp-controller="Proizvodi" asp-action="Details" asp-route-id="@item.id">@item.cijena KM</a></span>
                     </div>
 
                 </div>
