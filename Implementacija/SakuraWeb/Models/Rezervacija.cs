@@ -7,9 +7,12 @@ namespace SakuraWeb.Models
     {
         [Key]
         public int id { get; set; }
+        [Required]
         public DateTime datumRezervacije { get; set; }
+        [Required]
         public DateTime vrijemeTermina { get; set; }
         public bool otkazana { get; set; }
+        [Range(1, 5, ErrorMessage ="Ocjena mora biti između 1 i 5!")]
         public int ocjena { get; set; }
 
         [ForeignKey("Korisnik")]

@@ -15,14 +15,14 @@ namespace SakuraWeb.Models
         [DisplayName("naziv")]
         public required string naziv { get; set; }
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage ="Cijena mora biti između 0.01 i beskonačno KM")]
+        [Range(0.01, double.MaxValue, ErrorMessage ="Cijena mora biti veća od 0.01 KM")]
         [DisplayName("cijena")]
         public double cijena { get; set; }
 
 
         [EnumDataType(typeof(KategorijaProizvoda))]     public KategorijaProizvoda kategorija { get; set; }
         [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Volumen mora biti između 0.01 i beskonačno ml")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Volumen mora biti iznad 0.01 ml")]
         [DisplayName("volumen")]
         public double volumen { get; set; }
 
