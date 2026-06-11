@@ -26,8 +26,8 @@ namespace SakuraWeb.Models
         [DisplayName("volumen")]
         public double volumen { get; set; }
 
-        [Required]
-        public string slikaPutanja { get; set; }
+        //[Required]
+        public string? slikaPutanja { get; set; }
 
         public Proizvod()
         {

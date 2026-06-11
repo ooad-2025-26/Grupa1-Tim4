@@ -59,6 +59,14 @@ namespace SakuraWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja")] Proizvod proizvod, IFormFile? slika)
         {
+            Console.WriteLine("#Model IN");
+            foreach (var kvp in ModelState)
+            {
+                foreach (var error in kvp.Value.Errors)
+                {
+                    Console.WriteLine($"{kvp.Key}: {error.ErrorMessage}");
+                }
+            }
             if (ModelState.IsValid)
             {
                 if (slika != null && slika.Length > 0)
