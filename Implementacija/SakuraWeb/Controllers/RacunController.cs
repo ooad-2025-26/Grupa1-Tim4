@@ -67,7 +67,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Racun/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
             {
@@ -139,7 +139,7 @@ namespace SakuraWeb.Controllers
         // POST: Racun/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var korisnik = await _context.korisnici.FindAsync(id);
             if (korisnik != null)
