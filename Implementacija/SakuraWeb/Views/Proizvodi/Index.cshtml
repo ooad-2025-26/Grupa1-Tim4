@@ -13,7 +13,10 @@
 <div class="container">
     <div class="d-flex justify-content-end">
         <div class="d-3">
-            <button class="sakura-btn-dimmed">Filtriraj</button>
+            <!--<form asp-action="Create">
+                <input type="submit" value="Create" class="sakura-btn-dimmed" />
+            </form>-->
+            <button class="sakura-btn-dimmed" asp-action="Create">Filtriraj</button>
             <button class="sakura-btn-dark">Sortiraj</button>
         </div>
     </div>
@@ -23,7 +26,8 @@
     if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
         <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
             <div>
-                <img src="img/product-image-1.jpg">
+                <!--<img src="img/product-image-1.jpg">-->
+                <img src="~/img/@item.slikaPutanja" alt="@item.naziv">
                     <p class="wittgenstein">@naslov</p>
             </div>
             <div class="volumen-cijena">
@@ -74,6 +78,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.volumen)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.slikaPutanja)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -91,6 +98,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.volumen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.slikaPutanja)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |

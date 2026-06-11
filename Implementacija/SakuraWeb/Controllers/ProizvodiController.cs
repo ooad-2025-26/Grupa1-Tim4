@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Microsoft.EntityFrameworkCore;
 using SakuraWeb.Data;
 using SakuraWeb.Models;
@@ -13,10 +14,12 @@ namespace SakuraWeb.Controllers
     public class ProizvodiController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public ProizvodiController(ApplicationDbContext context)
+        public ProizvodiController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: Proizvodi
@@ -54,10 +57,40 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen")] Proizvod proizvod)
+        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja")] Proizvod proizvod, IFormFile? slika)
         {
+            /*Console.WriteLine("#Model IN");
+            foreach (var kvp in ModelState)
+            {
+                foreach (var error in kvp.Value.Errors)
+                {
+                    Console.WriteLine($"{kvp.Key}: {error.ErrorMessage}");
+                }
+            }*/
             if (ModelState.IsValid)
             {
+                if (slika != null && slika.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(
+                        _environment.WebRootPath,
+                        "img");
+
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName =
+                        Guid.NewGuid().ToString() +
+                        Path.GetExtension(slika.FileName);
+
+                    string filePath =
+                        Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await slika.CopyToAsync(stream);
+                    }
+
+                    proizvod.slikaPutanja = uniqueFileName;
+                }
                 _context.Add(proizvod);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
