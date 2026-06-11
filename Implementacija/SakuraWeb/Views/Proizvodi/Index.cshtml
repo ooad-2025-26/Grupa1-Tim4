@@ -75,6 +75,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.volumen)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.slikaPutanja)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -92,6 +95,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.volumen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.slikaPutanja)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
 using Microsoft.EntityFrameworkCore;
 using SakuraWeb.Data;
 using SakuraWeb.Models;
@@ -56,12 +57,13 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen")] Proizvod proizvod, IFormFile? slika)
+        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja")] Proizvod proizvod, IFormFile? slika)
         {
             if (ModelState.IsValid)
             {
                 if (slika != null && slika.Length > 0)
                 {
+                    Console.WriteLine("#Slika IN");
                     string uploadsFolder = Path.Combine(
                         _environment.WebRootPath,
                         "img");
@@ -82,6 +84,7 @@ namespace SakuraWeb.Controllers
 
                     proizvod.slikaPutanja = uniqueFileName;
                 }
+                Console.WriteLine("#Slika OUT");
                 _context.Add(proizvod);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

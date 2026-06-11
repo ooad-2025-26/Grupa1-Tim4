@@ -11,7 +11,7 @@ namespace SakuraWeb.Models
         public int id { get; set; }
         [Required]
         [StringLength(maximumLength:50, MinimumLength =3, ErrorMessage ="Naziv proizvoda smije imati između 3 i 50 karaktera!")]
-        [RegularExpression(@"[0-9| |a-z|A-Z|®]*", ErrorMessage = "Dozvoljeno je samo korištenje velikih i malih slova, brojeva i razmaka!")]
+        //[RegularExpression(@"[0-9| |a-z|A-Z|®]*", ErrorMessage = "Dozvoljeno je samo korištenje velikih i malih slova, brojeva i razmaka!")]
         [DisplayName("naziv")]
         public required string naziv { get; set; }
         [Required]
