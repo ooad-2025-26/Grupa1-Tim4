@@ -11,7 +11,11 @@ namespace SakuraWeb.Models
         public int newsletterId { get; set; }
 
         public Newsletter newsletter { get; set; }
+        [Required]
+        [StringLength(maximumLength:100, MinimumLength =0, ErrorMessage ="Naziv poruke mora imati ispod 100 karaktera!")]
+        [RegularExpression(@"[0-9| |a-z|A-Z|®]*", ErrorMessage = "Dozvoljeno je samo korištenje velikih i malih slova, brojeva i razmaka!")]
         public string naziv { get; set; }
+        [Required]
         public string tekst { get; set; }
 
         public Poruka(string naziv, string tekst)

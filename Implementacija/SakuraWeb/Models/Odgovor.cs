@@ -12,7 +12,9 @@ namespace SakuraWeb.Models
 
         public Pitanje pitanje { get; set; }
 
+        [Required]
         public string sadrzaj { get; set; }
+        
         public int poeni { get; set; }
         
         public Odgovor()

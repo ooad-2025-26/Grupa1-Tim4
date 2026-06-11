@@ -12,6 +12,7 @@ namespace SakuraWeb.Models
 
         public Anketa anketa { get; set; }
 
+        [Required]
         public string sadrzaj { get; set; }
 
         public Pitanje()
