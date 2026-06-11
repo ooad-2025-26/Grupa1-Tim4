@@ -90,7 +90,7 @@ public class RegisterModel : PageModel
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "Greška: lozinka mora biti barem 6 znakova duga.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; } = default!;
@@ -128,23 +128,35 @@ public class RegisterModel : PageModel
             await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
             user.emailAdresa = Input.Email;
             user.jePretplacenNaNewsletter = Input.PretplatiteSeNaNewsletter;
+            user.ulogaKorisnika = Models.Uloga.Klijent;  // Set role to Klijent (value = 1)
             var result = await _userManager.CreateAsync(user, Input.Password);
-            user.lozinka = user.PasswordHash;
+
             if (result.Succeeded)
             {
                 _logger.LogInformation("User created a new account with password.");
 
+                // Assign "Klijent" role to new users
+                await _userManager.AddToRoleAsync(user, "Klijent");
+
+                // Fetch the user back from DB to get the actual hashed password and sync lozinka
+                var createdUser = await _userManager.FindByIdAsync(user.Id);
+                if (createdUser != null)
+                {
+                    createdUser.lozinka = createdUser.PasswordHash;
+                    await _userManager.UpdateAsync(createdUser);
+                }
+
                 var userId = await _userManager.GetUserIdAsync(user);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-                
+
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
                     values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme)!;
-                
+
                 await _emailSender.SendEmailAsync(Input.Email, "[Sakura] Potvrdite vašu Email adresu",
                     $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Kliknite ovdje</a> da bi potvrdili vaš račun.");
 

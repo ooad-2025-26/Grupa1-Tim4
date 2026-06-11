@@ -1,10 +1,82 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    
 }
 
-<div>
-    <img class="background" src="./img/Group174.svg" />
-</div>
-<div>
-    <img class="background" src="./img/image-2.png" />
-</div>
+@if (User.IsInRole("Administrator"))
+{
+    
+    <div class="container-fluid border-bottom border-4 rounded-bottom shadow-sm" style="background-color: white; border-color: black">
+        <div class="row">
+            <div class="col-md text-center">
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <img src="img/UserNoBG.svg">
+                    <span class="admin-panel-heading">Korisnici</span>
+                </div>
+                <span class="admin-stats-number d-block">@Model.KorisniciCount</span>
+            </div>
+            <div class="col-md text-center">
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <img src="img/Calendar.svg">
+                    <span class="admin-panel-heading">Zakazani termini</span>
+                </div>
+                <span class="admin-stats-number d-block">@Model.RezervacijeCount</span>
+            </div>
+            <div class="col-md text-center">
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <img src="img/Scissors.svg">
+                    <span class="admin-panel-heading">Proizvodi</span>
+                </div>
+                <span class="admin-stats-number d-block">@Model.ProizvodiCount</span>
+            </div>
+        </div>
+    </div>
+    <partial name="_AdminNavPartial" />
+    <div class="container">
+
+	
+        <div class="row">
+            <div class="col-sm-4">
+                <a class="admin-panel-button" asp-controller="Racun" asp-action="Index">
+                    Pregled korisničkih naloga
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <a class="admin-panel-button" asp-controller="Racun" asp-action="Create">
+                    Registracija uposlenika
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <a class="admin-panel-button" asp-controller="Newsletter" asp-action="Create">
+                    Uređivanje newslettera
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <a class="admin-panel-button" asp-controller="Usluga" asp-action="Index">
+                    Izmjena usluga 
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <a class="admin-panel-button" asp-controller="Proizvodi" asp-action="Index">
+                    Izmjena proizvoda
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <a class="admin-panel-button" asp-controller="Rezervacija" asp-action="Index">
+                    Pregled termina i rezervacija
+                </a>
+            </div>
+        </div>
+    </div>
+
+}else
+{
+    <div>
+        <img class="background" src="./img/Group174.svg" />
+    </div>
+    <div>
+        <img class="background" src="./img/image-2.png" />
+    </div>
+}

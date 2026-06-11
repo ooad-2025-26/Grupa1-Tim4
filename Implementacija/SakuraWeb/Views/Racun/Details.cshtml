@@ -4,45 +4,47 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
-<div>
+<partial name="_AdminNavPartial"></partial>
+    <div class="container mt-4 shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg">
     <h4>Korisnik</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.korisnickoIme)
+        <dt class = "col-sm-4">
+            Korisničko ime
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-8">
             @Html.DisplayFor(model => model.korisnickoIme)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.emailAdresa)
+        <dt class = "col-sm-4">
+            Email adresa
         </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-8">
             @Html.DisplayFor(model => model.emailAdresa)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.lozinka)
+        <dt class = "col-sm-4">
+            Pretplaćen na newsletter?
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.lozinka)
+        <dd class = "col-sm-8">
+            @if (Model.jePretplacenNaNewsletter)
+            {
+                <span>Da</span>
+            } else
+            {
+                <span>Ne</span>
+            }
+            
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.jePretplacenNaNewsletter)
+        <dt class = "col-sm-4">
+            Uloga
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.jePretplacenNaNewsletter)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ulogaKorisnika)
-        </dt>
-        <dd class = "col-sm-10">
+        <dd class = "col-sm-8">
             @Html.DisplayFor(model => model.ulogaKorisnika)
         </dd>
     </dl>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="sakura-btn-dark">Resetuj lozinku</a>
+        <a asp-action="Delete" asp-route-id="@Model?.Id" class="sakura-btn-dark">Obriši korisnika</a>
+        <a asp-action="Index" class="sakura-btn-dark">Nazad na listu</a>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+

@@ -1,59 +1,79 @@
 ﻿@model IEnumerable<SakuraWeb.Models.Korisnik>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Korisnički računi";
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    <partial name="_AdminNavPartial"></partial>
+    <div class="text-center">
+        <h1 class="admin-panel-heading">Pregled korisničkih naloga</h1><br>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.korisnickoIme)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.emailAdresa)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.lozinka)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.jePretplacenNaNewsletter)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ulogaKorisnika)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.korisnickoIme)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.emailAdresa)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.lozinka)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.jePretplacenNaNewsletter)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ulogaKorisnika)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <!-- Klijenti Table -->
+    <div class="shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg mb-4">
+        <h2 class="text-center mb-4">Klijenti</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Korisničko ime</th>
+                        <th>Email adresa</th>
+                        <th>Rezervacije</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Where(x => x.ulogaKorisnika.ToString() == "Klijent"))
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.korisnickoIme)</td>
+                            <td>@Html.DisplayFor(modelItem => item.emailAdresa)</td>
+                            <td>
+                                <a asp-action="Rezervacije" asp-route-id="@item.Id">Pregled</a>
+                            </td>
+                            <td style="text-align: right;">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="edit-dugme">Detalji</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="edit-dugme">Uredi</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="edit-dugme">Obriši</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Frizeri Table -->
+    <div class="shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Frizeri</h2>
+            <a asp-action="Create" class="sakura-btn-dark">Dodaj novog frizera</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Korisničko ime</th>
+                        <th>Email adresa</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Where(x => x.ulogaKorisnika.ToString() == "Frizer"))
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.korisnickoIme)</td>
+                            <td>@Html.DisplayFor(modelItem => item.emailAdresa)</td>
+                            <td style="text-align: right;">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="edit-dugme">Detalji</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="edit-dugme">Uredi</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="edit-dugme">Obriši</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
