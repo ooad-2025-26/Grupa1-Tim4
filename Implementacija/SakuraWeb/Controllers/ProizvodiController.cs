@@ -59,19 +59,18 @@ namespace SakuraWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja")] Proizvod proizvod, IFormFile? slika)
         {
-            Console.WriteLine("#Model IN");
+            /*Console.WriteLine("#Model IN");
             foreach (var kvp in ModelState)
             {
                 foreach (var error in kvp.Value.Errors)
                 {
                     Console.WriteLine($"{kvp.Key}: {error.ErrorMessage}");
                 }
-            }
+            }*/
             if (ModelState.IsValid)
             {
                 if (slika != null && slika.Length > 0)
                 {
-                    Console.WriteLine("#Slika IN");
                     string uploadsFolder = Path.Combine(
                         _environment.WebRootPath,
                         "img");
@@ -92,7 +91,6 @@ namespace SakuraWeb.Controllers
 
                     proizvod.slikaPutanja = uniqueFileName;
                 }
-                Console.WriteLine("#Slika OUT");
                 _context.Add(proizvod);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
