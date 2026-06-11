@@ -23,7 +23,8 @@
     if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
         <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
             <div>
-                <img src="img/product-image-1.jpg">
+                <!--<img src="img/product-image-1.jpg">-->
+                <img src="~/img/@item.slikaPutanja" alt="@item.naziv">
                     <p class="wittgenstein">@naslov</p>
             </div>
             <div class="volumen-cijena">
