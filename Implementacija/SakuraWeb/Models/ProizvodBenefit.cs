@@ -6,6 +6,7 @@ namespace SakuraWeb.Models
     public class ProizvodBenefit
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
 
         [ForeignKey("Proizvod")]
@@ -19,7 +20,6 @@ namespace SakuraWeb.Models
 
         public ProizvodBenefit()
         {
-            id = -1;
             proizvodId = 0;
             benefitId = 0;
             proizvod = null;

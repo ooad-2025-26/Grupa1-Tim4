@@ -1,8 +1,71 @@
-﻿@model IEnumerable<SakuraWeb.Models.Proizvod>
+@model IEnumerable<SakuraWeb.Models.Proizvod>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Proizvodi";
 }
+
+
+@if (User.IsInRole("Administrator"))
+{
+    <partial name="_AdminNavPartial"></partial>
+
+  <div class="shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg mb-4 mt-4">
+        <h2 class="text-center mb-4">Izmjena proizvoda</h2>
+
+        <a asp-action="Create" class="sakura-btn-dark mb-2">Dodajte novi proizvod</a>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Naziv
+                        </th>
+                        <th>
+                            Cijena
+                        </th>
+                        <th>
+                            Kategorija
+                        </th>
+                        <th>
+                            Volumen
+                        </th>
+                        <th>
+                            Slika
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+@foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.naziv)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.cijena)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.kategorija)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.volumen)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.slikaPutanja)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.id">Uredi</a> |
+                            <a asp-action="Details" asp-route-id="@item.id">Detalji</a> |
+                            <a asp-action="Delete" asp-route-id="@item.id">Izbriši</a>
+                        </td>
+                    </tr>
+}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+} else {
 
 <header class="sakura-header-grad push-it-down">
     <h1 class="stack-sans-headline-h1 sakura-hotpink text-center">Proizvodi</h1>
@@ -243,59 +306,7 @@
         </div>-->
     </div>
 </div>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.naziv)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.cijena)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.kategorija)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.volumen)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.slikaPutanja)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.naziv)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.cijena)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.kategorija)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.volumen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.slikaPutanja)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
 }
-    </tbody>
-</table>
 <script>
     document.querySelectorAll('.sort-option').forEach(item => {
         item.addEventListener('click', function(e) {

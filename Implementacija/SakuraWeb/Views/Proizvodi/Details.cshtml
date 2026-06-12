@@ -1,8 +1,82 @@
 ﻿@model SakuraWeb.Models.Proizvod
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Proizvod";
 }
+
+@if (User.IsInRole("Administrator"))
+{
+    <partial name="_AdminNavPartial"></partial>
+    <div class="shadow-lg rounded-4 p-4 sakura-lightgray-bg mb-4 mt-4 container" style="width:60%;">
+    <h2 class="mb-4 admin-panel-heading">Detalji o proizvodu</h2>
+
+    <div class="">
+        <div class="col-md-8">
+            <dl class="row mt-3">
+                <dt class="col-sm-2">
+                    Naziv
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.naziv)
+                </dd>
+                <dt class="col-sm-2">
+                    Cijena
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.cijena)
+                </dd>
+                <dt class="col-sm-2">
+                    Kategorija
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.kategorija)
+                </dd>
+                <dt class="col-sm-2">
+                    Volumen
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.volumen)
+                </dd>
+                <dt class="col-sm-2">
+                    Benefiti
+                </dt>
+                <dd class="col-sm-10">
+                    @{
+                        var benefiti = (List<SakuraWeb.Models.Benefit>)ViewData["ProizvodBenefiti"]!;
+                    }
+                    @if (benefiti.Any())
+                    {
+                        @string.Join(", ", benefiti.Select(b => b.opis))
+                    }
+                    else
+                    {
+                        <span>—</span>
+                    }
+                </dd>
+                <dt class="col-sm-2">
+                    Sastojci
+                </dt>
+                <dd class="col-sm-10">
+                    @if (Model.ProizvodSastojci.Any())
+                    {
+                        @string.Join(", ", Model.ProizvodSastojci.Select(ps => ps.sastojak.naziv))
+                    }
+                    else
+                    {
+                        <span>—</span>
+                    }
+                </dd>
+            </dl>
+
+            <div class="form-group mt-2">
+                <a asp-action="Index" class="sakura-btn-dark">Nazad na listu proizvoda</a>
+            </div>
+        </div>
+    </div>
+    </div>
+
+} else {
+
 <div class="container">
     <div class="proizvod-max-container row">
         <!-- Adnanov AI slop -->
@@ -91,39 +165,4 @@
     });
     });
 </script>
-<h1>Details</h1>
-
-<div>
-    <h4>Proizvod</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.naziv)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.naziv)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.cijena)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.cijena)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.kategorija)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.kategorija)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.volumen)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.volumen)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+}
