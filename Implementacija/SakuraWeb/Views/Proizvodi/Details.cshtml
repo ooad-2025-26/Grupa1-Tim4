@@ -127,7 +127,14 @@
             <div class="row wittgenstein text-center">
                 <div class="col-sm">
                     <p class="fs-5 text-shadow">Benefiti proizvoda</p>
-                    <div>
+                        @foreach (var ps in Model.ProizvodBenefiti)
+                        {
+                                <div>
+                                    <img src="~/img/benefiti/@ps.benefit.URLSlike">
+                                    <p class="fs-6">@ps.benefit.opis</p>
+                                </div>
+                        }
+                        <!--<div>
                         <img src="~/img/benefiti/cesalj.svg">
                         <p class="fs-6">Raščešljava kosu</p>
                     </div>
@@ -138,18 +145,23 @@
                     <div>
                         <img src="~/img/benefiti/gusca.svg">
                         <p class="fs-6">Gušća kosa</p>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="col-sm">
                     <p class="fs-5 text-shadow">Ključni sastojci</p>
-                    <div>
+                        @foreach (var ps in Model.ProizvodSastojci)
+                        {
+                                <img src="~/img/sastojci/@ps.sastojak.URLSlike">
+                                <p class="fs-6">@ps.sastojak.naziv</p>
+                        }
+                        <!--<div>
                         <img src="~/img/sastojci/hijaluronska_kiselina.png">
                         <p class="fs-6">Hijaluronska kiselina</p>
                     </div>
                     <div>
                         <img src="~/img/sastojci/intra-cylane.png">
                         <p class="fs-6">Intra-cylane&reg; minerali</p>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
