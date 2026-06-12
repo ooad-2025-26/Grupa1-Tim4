@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create"  enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="naziv" class="control-label"></label>
@@ -22,15 +22,27 @@
                 <input asp-for="cijena" class="form-control" />
                 <span asp-validation-for="cijena" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="kategorija" class="control-label"></label>
-                <select asp-for="kategorija" class="form-control" asp-items="Html.GetEnumSelectList<KategorijaProizvoda>()"></select>
+                <select asp-for="kategorija" class="form-control" asp-items="Html.GetEnumSelectList<SakuraWeb.Models.KategorijaProizvoda>()"></select>
                 <span asp-validation-for="kategorija" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="volumen" class="control-label"></label>
                 <input asp-for="volumen" class="form-control" />
                 <span asp-validation-for="volumen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="poeniPr" class="control-label"></label>
+                <input asp-for="poeniPr" class="form-control" />
+                <span asp-validation-for="poeniPr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <!--<label asp-for="slikaPutanja">Slika</label>
+                <input type="file" asp-for="slikaPutanja" class="form-control" accept="image/*" />-->
+                <label>Slika</label>
+                <input type="file" name="slika" class="form-control" accept="image/*" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

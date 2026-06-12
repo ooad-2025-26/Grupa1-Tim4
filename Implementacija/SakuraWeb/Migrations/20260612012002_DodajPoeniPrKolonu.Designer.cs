@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SakuraWeb.Data;
 
@@ -11,9 +12,11 @@ using SakuraWeb.Data;
 namespace SakuraWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612012002_DodajPoeniPrKolonu")]
+    partial class DodajPoeniPrKolonu
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -786,13 +789,13 @@ namespace SakuraWeb.Migrations
             modelBuilder.Entity("SakuraWeb.Models.ProizvodSastojak", b =>
                 {
                     b.HasOne("SakuraWeb.Models.Proizvod", "proizvod")
-                        .WithMany("ProizvodSastojci")
+                        .WithMany()
                         .HasForeignKey("proizvodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SakuraWeb.Models.Sastojak", "sastojak")
-                        .WithMany("ProizvodSastojci")
+                        .WithMany()
                         .HasForeignKey("sastojakId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -824,16 +827,6 @@ namespace SakuraWeb.Migrations
             modelBuilder.Entity("SakuraWeb.Models.Pitanje", b =>
                 {
                     b.Navigation("odgovori");
-                });
-
-            modelBuilder.Entity("SakuraWeb.Models.Proizvod", b =>
-                {
-                    b.Navigation("ProizvodSastojci");
-                });
-
-            modelBuilder.Entity("SakuraWeb.Models.Sastojak", b =>
-                {
-                    b.Navigation("ProizvodSastojci");
                 });
 #pragma warning restore 612, 618
         }

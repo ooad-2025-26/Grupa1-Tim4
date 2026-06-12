@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SakuraWeb.Data;
 
@@ -11,9 +12,11 @@ using SakuraWeb.Data;
 namespace SakuraWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612004604_DodajPoeniPrIPoeniOdgovor")]
+    partial class DodajPoeniPrIPoeniOdgovor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -168,6 +171,7 @@ namespace SakuraWeb.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<string>("korisnikId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("poeni")
@@ -334,92 +338,6 @@ namespace SakuraWeb.Migrations
                     b.HasIndex("pitanjeId");
 
                     b.ToTable("Odgovori", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            pitanjeId = 1,
-                            poeni = 0,
-                            sadrzaj = "masno"
-                        },
-                        new
-                        {
-                            id = 2,
-                            pitanjeId = 1,
-                            poeni = 1,
-                            sadrzaj = "normalno"
-                        },
-                        new
-                        {
-                            id = 3,
-                            pitanjeId = 1,
-                            poeni = 3,
-                            sadrzaj = "suho"
-                        },
-                        new
-                        {
-                            id = 4,
-                            pitanjeId = 2,
-                            poeni = 0,
-                            sadrzaj = "masna"
-                        },
-                        new
-                        {
-                            id = 5,
-                            pitanjeId = 2,
-                            poeni = 2,
-                            sadrzaj = "oštećena"
-                        },
-                        new
-                        {
-                            id = 6,
-                            pitanjeId = 2,
-                            poeni = 3,
-                            sadrzaj = "suha"
-                        },
-                        new
-                        {
-                            id = 7,
-                            pitanjeId = 3,
-                            poeni = 1,
-                            sadrzaj = "sušenje"
-                        },
-                        new
-                        {
-                            id = 8,
-                            pitanjeId = 3,
-                            poeni = 2,
-                            sadrzaj = "feniranje"
-                        },
-                        new
-                        {
-                            id = 9,
-                            pitanjeId = 3,
-                            poeni = 3,
-                            sadrzaj = "pegla/figaro"
-                        },
-                        new
-                        {
-                            id = 10,
-                            pitanjeId = 4,
-                            poeni = 1,
-                            sadrzaj = "ponekad"
-                        },
-                        new
-                        {
-                            id = 11,
-                            pitanjeId = 4,
-                            poeni = 2,
-                            sadrzaj = "sedmično"
-                        },
-                        new
-                        {
-                            id = 12,
-                            pitanjeId = 4,
-                            poeni = 3,
-                            sadrzaj = "svaki dan"
-                        });
                 });
 
             modelBuilder.Entity("SakuraWeb.Models.Pitanje", b =>
@@ -442,32 +360,6 @@ namespace SakuraWeb.Migrations
                     b.HasIndex("anketaId");
 
                     b.ToTable("Pitanja", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            anketaId = 0,
-                            sadrzaj = "Ključni problem tjemena?"
-                        },
-                        new
-                        {
-                            id = 2,
-                            anketaId = 0,
-                            sadrzaj = "Ključni problem vrhova kose?"
-                        },
-                        new
-                        {
-                            id = 3,
-                            anketaId = 0,
-                            sadrzaj = "Na koji način stilizujete?"
-                        },
-                        new
-                        {
-                            id = 4,
-                            anketaId = 0,
-                            sadrzaj = "Koliko često koristiš proizvode za njegu?"
-                        });
                 });
 
             modelBuilder.Entity("SakuraWeb.Models.Poruka", b =>
@@ -515,9 +407,6 @@ namespace SakuraWeb.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("poeniPr")
-                        .HasColumnType("int");
 
                     b.Property<string>("slikaPutanja")
                         .HasColumnType("nvarchar(max)");
@@ -726,7 +615,9 @@ namespace SakuraWeb.Migrations
                 {
                     b.HasOne("SakuraWeb.Models.Korisnik", "korisnik")
                         .WithMany()
-                        .HasForeignKey("korisnikId");
+                        .HasForeignKey("korisnikId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("korisnik");
                 });
@@ -734,7 +625,7 @@ namespace SakuraWeb.Migrations
             modelBuilder.Entity("SakuraWeb.Models.Odgovor", b =>
                 {
                     b.HasOne("SakuraWeb.Models.Pitanje", "pitanje")
-                        .WithMany("odgovori")
+                        .WithMany()
                         .HasForeignKey("pitanjeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -786,13 +677,13 @@ namespace SakuraWeb.Migrations
             modelBuilder.Entity("SakuraWeb.Models.ProizvodSastojak", b =>
                 {
                     b.HasOne("SakuraWeb.Models.Proizvod", "proizvod")
-                        .WithMany("ProizvodSastojci")
+                        .WithMany()
                         .HasForeignKey("proizvodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SakuraWeb.Models.Sastojak", "sastojak")
-                        .WithMany("ProizvodSastojci")
+                        .WithMany()
                         .HasForeignKey("sastojakId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -819,21 +710,6 @@ namespace SakuraWeb.Migrations
                     b.Navigation("korisnik");
 
                     b.Navigation("usluga");
-                });
-
-            modelBuilder.Entity("SakuraWeb.Models.Pitanje", b =>
-                {
-                    b.Navigation("odgovori");
-                });
-
-            modelBuilder.Entity("SakuraWeb.Models.Proizvod", b =>
-                {
-                    b.Navigation("ProizvodSastojci");
-                });
-
-            modelBuilder.Entity("SakuraWeb.Models.Sastojak", b =>
-                {
-                    b.Navigation("ProizvodSastojci");
                 });
 #pragma warning restore 612, 618
         }

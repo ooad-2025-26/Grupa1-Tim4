@@ -13,24 +13,32 @@
 <div class="container">
     <div class="d-flex justify-content-end">
         <div class="d-3">
-            <button class="sakura-btn-dimmed">Filtriraj</button>
+            <!--<form asp-action="Create">
+                <input type="submit" value="Create" class="sakura-btn-dimmed" />
+            </form>-->
+            <button class="sakura-btn-dimmed" asp-action="Create">Filtriraj</button>
             <button class="sakura-btn-dark">Sortiraj</button>
         </div>
     </div>
-    <div class="proizvodi-container mx-auto row">
+    <div class="proizvodi-container mx-auto row scroll-container-proizvodi">
 @foreach (var item in Model) {
     var naslov = item.naziv;
-    if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
-        <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
-            <div>
-                <img src="img/product-image-1.jpg">
-                    <p class="wittgenstein">@naslov</p>
+    //if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
+            <div class="col-sm-3 p-2">
+                <div class="proizvod-card-proizvodi d-flex flex-column align-items-center">
+
+                    <div class="image-wrapper-proizvodi">
+                        <img src="~/img/@item.slikaPutanja" alt="@item.naziv">
+                    </div>
+
+                    <p class="wittgenstein-proizvodi text-center">@naslov</p>
+
+                    <div class="volumen-cijena-proizvodi mt-auto">
+                        <span> <a asp-controller="Proizvodi" asp-action="Details" asp-route-id="@item.id">@item.cijena KM</a></span>
+                    </div>
+
+                </div>
             </div>
-            <div class="volumen-cijena">
-                    <span>@Html.DisplayFor(modelItem => item.volumen) ml</span>
-                    <span>@Html.DisplayFor(modelItem => item.cijena) KM</span>
-            </div>
-        </div>
 }
         <!--<div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
             <div>
@@ -74,6 +82,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.volumen)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.slikaPutanja)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -91,6 +102,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.volumen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.slikaPutanja)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
