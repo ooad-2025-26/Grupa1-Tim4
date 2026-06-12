@@ -27,7 +27,6 @@
                     <tr>
                         <th>Korisničko ime</th>
                         <th>Email adresa</th>
-                        <th>Rezervacije</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -37,9 +36,6 @@
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.korisnickoIme)</td>
                             <td>@Html.DisplayFor(modelItem => item.emailAdresa)</td>
-                            <td>
-                                <a asp-action="Rezervacije" asp-route-id="@item.Id">Pregled</a>
-                            </td>
                             <td style="text-align: right;">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="edit-dugme">Detalji</a>
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="edit-dugme">Resetuj lozinku</a>
