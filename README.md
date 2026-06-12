@@ -1,19 +1,19 @@
 # Grupa1-Tim4
 
-# Primjeri korištenih naloga
+# Neki od korištenih naloga
 
 1) 
-    * Naziv: 
-    * Šifra: 
-    * Uloga: Administrator
+    * Naziv: ``
+    * Šifra: ``
+    * Uloga: `Administrator`
 1) 
-    * Naziv: 
-    * Šifra: 
+    * Naziv: ``
+    * Šifra: ``
     * Uloga: Frizer
 1) 
-    * Naziv: 
-    * Šifra: 
-    * Uloga:  Klijent
+    * Naziv: ``
+    * Šifra: ``
+    * Uloga: Klijent
 
 # Link za pristup _web_ aplikaciji
 
