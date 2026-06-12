@@ -47,7 +47,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga/Create
-        [Authorize(Roles = "Korisnik, Administrator, Zaposlenik")]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +58,7 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([Bind("id,naziv,opis,cijena,kategorija,trajanje")] Usluga usluga)
         {
             if (ModelState.IsValid)
@@ -70,7 +71,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga/Edit/5
-        [Authorize(Roles = "Korisnik, Administrator, Zaposlenik")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,6 +92,7 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("id,naziv,opis,cijena,kategorija,trajanje")] Usluga usluga)
         {
             if (id != usluga.id)
@@ -122,7 +124,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga/Delete/5
-        [Authorize(Roles = "Korisnik, Administrator, Zaposlenik")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,6 +145,7 @@ namespace SakuraWeb.Controllers
         // POST: Usluga/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var usluga = await _context.usluge.FindAsync(id);

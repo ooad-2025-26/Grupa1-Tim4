@@ -6,10 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SakuraWeb.Data;
 using SakuraWeb.Models;
+using SakuraWeb.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SakuraWeb.Controllers
 {
@@ -17,11 +19,13 @@ namespace SakuraWeb.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Korisnik> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public RacunController(ApplicationDbContext context, UserManager<Korisnik> userManager)
+        public RacunController(ApplicationDbContext context, UserManager<Korisnik> userManager, IEmailSender emailSender)
         {
             _context = context;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         // GET: Racun
@@ -123,40 +127,91 @@ namespace SakuraWeb.Controllers
         }
 
         // POST: Racun/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Reset password action
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(string id, [Bind("id,korisnickoIme,emailAdresa,lozinka,jePretplacenNaNewsletter,ulogaKorisnika")] Korisnik korisnik)
+        public async Task<IActionResult> ResetPassword(string id)
         {
-            if (id != korisnik.Id)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var korisnik = await _userManager.FindByIdAsync(id);
+            if (korisnik == null)
             {
-                try
+                return NotFound();
+            }
+
+            // Generate a random strong password
+            var randomPassword = GenerateRandomPassword();
+
+            // Reset the user's password
+            var token = await _userManager.GeneratePasswordResetTokenAsync(korisnik);
+            var result = await _userManager.ResetPasswordAsync(korisnik, token, randomPassword);
+
+            if (result.Succeeded)
+            {
+                // Sync lozinka with the new password hash
+                var updatedUser = await _userManager.FindByIdAsync(korisnik.Id);
+                if (updatedUser != null)
                 {
-                    _context.Update(korisnik);
-                    await _context.SaveChangesAsync();
+                    updatedUser.lozinka = updatedUser.PasswordHash;
+                    await _userManager.UpdateAsync(updatedUser);
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    //if (!KorisnikExists(korisnik.id))
-                    if(!korisnik.Id.IsNullOrEmpty())
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                // Send email with new password
+                var emailSubject = "[Sakura] Reset lozinke";
+                var emailBody = $"Administrator je resetovao vašu lozinku i ona sada glasi: {randomPassword}. Molimo vas da se prijavite na stranicu i promijenite je.";
+                await _emailSender.SendEmailAsync(korisnik.emailAdresa, emailSubject, emailBody);
+
+                TempData["SuccessMessage"] = $"Lozinka za korisnika {korisnik.korisnickoIme} je uspješno resetovana i poslana na email {korisnik.emailAdresa}.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(korisnik);
+
+            // If reset failed, show error
+            return RedirectToAction(nameof(Edit), new { id = id });
+        }
+
+        /// <summary>
+        /// Generate a random strong password
+        /// </summary>
+        private string GenerateRandomPassword()
+        {
+            var options = _userManager.PasswordHasher;
+            const string uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const string lowercase = "abcdefghijklmnopqrstuvwxyz";
+            const string digits = "0123456789";
+            const string special = "!@#$%^&*";
+
+            var random = new Random();
+            var password = new System.Text.StringBuilder();
+
+            // Add at least one character from each category
+            password.Append(uppercase[random.Next(uppercase.Length)]);
+            password.Append(lowercase[random.Next(lowercase.Length)]);
+            password.Append(digits[random.Next(digits.Length)]);
+            password.Append(special[random.Next(special.Length)]);
+
+            // Fill the rest with random characters
+            const string allChars = uppercase + lowercase + digits + special;
+            for (int i = password.Length; i < 12; i++)
+            {
+                password.Append(allChars[random.Next(allChars.Length)]);
+            }
+
+            // Shuffle the password
+            var passwordArray = password.ToString().ToCharArray();
+            for (int i = passwordArray.Length - 1; i > 0; i--)
+            {
+                int randomIndex = random.Next(i + 1);
+                var temp = passwordArray[i];
+                passwordArray[i] = passwordArray[randomIndex];
+                passwordArray[randomIndex] = temp;
+            }
+
+            return new string(passwordArray);
         }
 
         // GET: Racun/Delete/5
@@ -182,15 +237,26 @@ namespace SakuraWeb.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> Delete(string id, string razlog)
         {
             var korisnik = await _context.korisnici.FindAsync(id);
             if (korisnik != null)
             {
+                var email = korisnik.emailAdresa;
+                var username = korisnik.korisnickoIme;
+
+                // Remove the user
                 _context.korisnici.Remove(korisnik);
+                await _context.SaveChangesAsync();
+
+                // Send deletion notification email
+                var emailSubject = "[Sakura] Vaš račun je obrisan";
+                var emailBody = $"Administrator je obrisao vaš račun. Razlog: {razlog}";
+                await _emailSender.SendEmailAsync(email, emailSubject, emailBody);
+
+                TempData["SuccessMessage"] = $"Račun za korisnika {username} je uspješno obrisan.";
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

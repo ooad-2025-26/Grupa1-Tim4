@@ -10,6 +10,14 @@
         <h1 class="admin-panel-heading">Pregled korisničkih naloga</h1><br>
     </div>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-bottom: 20px;">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <!-- Klijenti Table -->
     <div class="shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg mb-4">
         <h2 class="text-center mb-4">Klijenti</h2>
@@ -34,7 +42,7 @@
                             </td>
                             <td style="text-align: right;">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="edit-dugme">Detalji</a>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="edit-dugme">Uredi</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="edit-dugme">Resetuj lozinku</a>
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="edit-dugme">Obriši</a>
                             </td>
                         </tr>
@@ -67,7 +75,7 @@
                             <td>@Html.DisplayFor(modelItem => item.emailAdresa)</td>
                             <td style="text-align: right;">
                                 <a asp-action="Details" asp-route-id="@item.Id" class="edit-dugme">Detalji</a>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="edit-dugme">Uredi</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="edit-dugme">Resetuj lozinku</a>
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="edit-dugme">Obriši</a>
                             </td>
                         </tr>

@@ -26,13 +26,31 @@ public class EmailSender : IEmailSender
         else if (string.IsNullOrEmpty(_options.AppPassword))
         {
             throw new Exception("Null AppPassword");
-        } 
+        }
+
         await Execute(_options.FromEmail, _options.AppPassword, subject, htmlMessage, toEmail);
+    }
+
+    public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage, string? fromEmail, string? appPassword)
+    {
+        var sendFrom = !string.IsNullOrEmpty(fromEmail) ? fromEmail : _options.FromEmail;
+        var sendPassword = !string.IsNullOrEmpty(appPassword) ? appPassword : _options.AppPassword;
+
+        if (string.IsNullOrEmpty(sendFrom))
+        {
+            throw new Exception("Null FromEmail");
+        }
+        else if (string.IsNullOrEmpty(sendPassword))
+        {
+            throw new Exception("Null AppPassword");
+        }
+
+        await Execute(sendFrom, sendPassword, subject, htmlMessage, toEmail);
     }
 
     public async Task Execute(string fromEmail, string appPassword, string subject, string htmlMessage, string toEmail)
     {
-        var smtpClient = new SmtpClient("smtp.gmail.com")
+        using var smtpClient = new SmtpClient("smtp.gmail.com")
         {
             Port = 587,
             Credentials = new NetworkCredential(fromEmail, appPassword),
@@ -51,11 +69,11 @@ public class EmailSender : IEmailSender
 
         try
         {
-            smtpClient.Send(mailMessage);
+            await smtpClient.SendMailAsync(mailMessage);
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception caught in SendEmailAsync(): {e.ToString()}");
+            Console.WriteLine($"Exception caught in SendEmailAsync(): {e}");
         }
     }
 }
