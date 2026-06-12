@@ -29,6 +29,9 @@ namespace SakuraWeb.Models
         //[Required]
         public string? slikaPutanja { get; set; }
 
+        public ICollection<ProizvodSastojak> ProizvodSastojci { get; set; }
+        = new List<ProizvodSastojak>();
+
         public Proizvod()
         {
             //id = -1;

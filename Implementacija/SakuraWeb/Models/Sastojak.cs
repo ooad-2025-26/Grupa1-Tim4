@@ -17,6 +17,9 @@ namespace SakuraWeb.Models
         [Required]
         public required string URLSlike { get; set; }
 
+        public ICollection<ProizvodSastojak> ProizvodSastojci { get; set; }
+        = new List<ProizvodSastojak>();
+
         public Sastojak()
         {
             id = -1;

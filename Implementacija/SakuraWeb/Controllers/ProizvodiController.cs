@@ -35,9 +35,17 @@ namespace SakuraWeb.Controllers
             {
                 return NotFound();
             }
-
             var proizvod = await _context.proizvodi
-                .FirstOrDefaultAsync(m => m.id == id);
+                .Include(p => p.ProizvodSastojci)
+                    .ThenInclude(ps => ps.sastojak)
+                .FirstOrDefaultAsync(p => p.id == id);
+            foreach (var ps in proizvod.ProizvodSastojci)
+            {
+                Console.WriteLine(ps.sastojak.naziv);
+            }
+
+            //var proizvod = await _context.proizvodi
+            //    .FirstOrDefaultAsync(m => m.id == id);
             if (proizvod == null)
             {
                 return NotFound();

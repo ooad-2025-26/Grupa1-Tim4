@@ -3,7 +3,94 @@
 @{
     ViewData["Title"] = "Details";
 }
-
+<div class="container">
+    <div class="proizvod-max-container row">
+        <!-- Adnanov AI slop -->
+        <div class="col-sm d-flex flex-column align-items-center">
+            <!--<p>
+                    <img src="img/densifique.png" class="img-fluid" alt="Densifique">
+                </p>-->
+            <div id="productCarousel" class="carousel slide w-100" data-bs-interval="false">
+                <div class="carousel-inner rounded border border-1 overflow-hidden">
+                    <div class="carousel-item active">
+                        <img src="img/densifique.png" class="d-block w-100" alt="Slide 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="img/carousel2.png" class="d-block w-100" alt="Slide 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="img/carousel3.png" class="d-block w-100" alt="Slide 3">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="img/carousel4.png" class="d-block w-100" alt="Slide 4">
+                    </div>
+                </div>
+            </div>
+            <div id="productCarouselThumbs" class="d-flex gap-2 mt-2">
+                <button type="button" class="btn p-0 border-0 thumb-btn active" data-bs-target="#productCarousel" data-bs-slide-to="0">
+                    <img src="img/carousel1.png" alt="Thumb 1">
+                </button>
+                <button type="button" class="btn p-0 border-0 thumb-btn" data-bs-target="#productCarousel" data-bs-slide-to="1">
+                    <img src="img/carousel2.png" alt="Thumb 2">
+                </button>
+                <button type="button" class="btn p-0 border-0 thumb-btn" data-bs-target="#productCarousel" data-bs-slide-to="2">
+                    <img src="img/carousel3.png" alt="Thumb 3">
+                </button>
+                <button type="button" class="btn p-0 border-0 thumb-btn" data-bs-target="#productCarousel" data-bs-slide-to="3">
+                    <img src="img/carousel4.png" alt="Thumb 4">
+                </button>
+            </div>
+        </div>
+        <div class="col-sm d-flex flex-column">
+            <h2 class="stack-sans-headline-h2">
+                @Html.DisplayFor(model => model.naziv)
+            </h2>
+            <div class="wittgenstein">
+                <p>Regenerator za gustoću kose za tanku ili prorijeđenu kosu.</p>
+                <p>@Html.DisplayFor(model => model.volumen)ml</p>
+                <p>@Html.DisplayFor(model => model.cijena) KM</p>
+            </div>
+            <div class="row wittgenstein text-center">
+                <div class="col-sm">
+                    <p class="fs-5 text-shadow">Benefiti proizvoda</p>
+                    <div>
+                        <img src="img/benefiti/cesalj.svg">
+                        <p class="fs-6">Raščešljava kosu</p>
+                    </div>
+                    <div>
+                        <img src="img/benefiti/tekstura.svg">
+                        <p class="fs-6">Poboljšava teksturu</p>
+                    </div>
+                    <div>
+                        <img src="img/benefiti/gusca.svg">
+                        <p class="fs-6">Gušća kosa</p>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <p class="fs-5 text-shadow">Ključni sastojci</p>
+                    <div>
+                        <img src="img/sastojci/hijaluronska_kiselina.png">
+                        <p class="fs-6">Hijaluronska kiselina</p>
+                    </div>
+                    <div>
+                        <img src="img/sastojci/intra-cylane.png">
+                        <p class="fs-6">Intra-cylane&reg; minerali</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const carousel = document.getElementById('productCarousel');
+    const thumbButtons = document.querySelectorAll('#productCarouselThumbs .thumb-btn');
+    carousel.addEventListener('slid.bs.carousel', function (event) {
+    thumbButtons.forEach((btn, index) => {
+    btn.classList.toggle('active', index === event.to);
+    });
+    });
+</script>
 <h1>Details</h1>
 
 <div>
