@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SakuraWeb.Data;
 
@@ -11,9 +12,11 @@ using SakuraWeb.Data;
 namespace SakuraWeb.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260612101146_sastojci1")]
+    partial class sastojci1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,44 +206,6 @@ namespace SakuraWeb.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Benefiti", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1,
-                            URLSlike = "tekstura.svg",
-                            opis = "Poboljšava tekstur"
-                        },
-                        new
-                        {
-                            id = 2,
-                            URLSlike = "sjajna_kosa.svg",
-                            opis = "Sjajna kosa"
-                        },
-                        new
-                        {
-                            id = 3,
-                            URLSlike = "gusca.svg",
-                            opis = "Gušća kosa"
-                        },
-                        new
-                        {
-                            id = 4,
-                            URLSlike = "jaca_kosu.svg",
-                            opis = "Jača kosu"
-                        },
-                        new
-                        {
-                            id = 5,
-                            URLSlike = "gusca.svg",
-                            opis = "Povećana gustoća"
-                        },
-                        new
-                        {
-                            id = 6,
-                            URLSlike = "dubinsko_ciscenje.svg",
-                            opis = "Dubinsko čišćenje"
-                        });
                 });
 
             modelBuilder.Entity("SakuraWeb.Models.Korisnik", b =>

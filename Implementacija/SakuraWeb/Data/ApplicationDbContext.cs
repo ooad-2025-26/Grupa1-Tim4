@@ -85,6 +85,22 @@ namespace SakuraWeb.Data
                 new Odgovor { id = 12, pitanjeId = 4, sadrzaj = "svaki dan", poeni = 3 }
             );
 
+            modelBuilder.Entity<Sastojak>().HasData(
+                new Sastojak { id = 1, URLSlike="hijaluronska_kiselina.png", naziv="Hijaluronska kiselina", opis="Ova visoko koncentrirana kiselina ojačava kosu." },
+                new Sastojak { id = 2, URLSlike = "intra-cylane.png", naziv = "Intra-cylane® minerali", opis = "Jačaju strukturu kose popunjavanjem oštećenja vlakana." },
+                new Sastojak { id = 3, URLSlike = "gluco_peptid.png", naziv = "Gluco peptid", opis = "Prodire u najdublje slojeve kutikule kako bi ojačao postojeću kosu." },
+                new Sastojak { id = 4, URLSlike = "ceramidi.png", naziv = "Ceramidi", opis = "Povećavaju sjaj, poblojšavaju elastičnost i zadržavaju vlagu te pospješuju rast kose." }
+                );
+
+            modelBuilder.Entity<Benefit>().HasData(
+                new Benefit { id =1, URLSlike= "tekstura.svg", opis= "Poboljšava tekstur" },
+                new Benefit { id =2, URLSlike = "sjajna_kosa.svg", opis = "Sjajna kosa" },
+                new Benefit { id =3, URLSlike = "gusca.svg", opis = "Gušća kosa" },
+                new Benefit { id =4, URLSlike = "jaca_kosu.svg", opis = "Jača kosu" },
+                new Benefit { id =5, URLSlike = "gusca.svg", opis = "Povećana gustoća" },
+                new Benefit { id =6, URLSlike = "dubinsko_ciscenje.svg", opis = "Dubinsko čišćenje" }
+                );
+
         }
     }
 }
