@@ -12,7 +12,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Vaš profil</a>
-            <a class="dropdown-item" href="#">Vaši termini</a>
+            <a class="dropdown-item" asp-area="" asp-controller="Rezervacija" asp-action="Index">Vaši termini</a>
             <form class="form-inline dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                 <button type="submit" class="nav-link btn btn-link text-dark">Odjavite se</button>
             </form>
