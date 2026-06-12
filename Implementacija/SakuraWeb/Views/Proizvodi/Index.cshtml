@@ -20,20 +20,20 @@
             <button class="sakura-btn-dark">Sortiraj</button>
         </div>
     </div>
-    <div class="proizvodi-container mx-auto row scroll-container">
+    <div class="proizvodi-container mx-auto row scroll-container-proizvodi">
 @foreach (var item in Model) {
     var naslov = item.naziv;
     //if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
             <div class="col-sm-3 p-2">
-                <div class="proizvod-card d-flex flex-column align-items-center">
+                <div class="proizvod-card-proizvodi d-flex flex-column align-items-center">
 
-                    <div class="image-wrapper">
+                    <div class="image-wrapper-proizvodi">
                         <img src="~/img/@item.slikaPutanja" alt="@item.naziv">
                     </div>
 
-                    <p class="wittgenstein text-center">@naslov</p>
+                    <p class="wittgenstein-proizvodi text-center">@naslov</p>
 
-                    <div class="volumen-cijena mt-auto">
+                    <div class="volumen-cijena-proizvodi mt-auto">
                         <span> <a asp-controller="Proizvodi" asp-action="Details" asp-route-id="@item.id">@item.cijena KM</a></span>
                     </div>
 

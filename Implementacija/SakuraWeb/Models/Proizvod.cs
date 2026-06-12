@@ -28,6 +28,9 @@ namespace SakuraWeb.Models
 
         public string? slikaPutanja { get; set; }
 
+        public ICollection<ProizvodSastojak> ProizvodSastojci { get; set; }
+        = new List<ProizvodSastojak>();
+
         // NOVO POLJE
         [Range(0, 12, ErrorMessage = "Bodovi proizvoda moraju biti između 0 i 12!")]
         [DisplayName("poeniPr")]

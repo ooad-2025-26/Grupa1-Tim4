@@ -802,12 +802,12 @@ input[type="checkbox"] {
     }
 }
 
-.scroll-container {
+.scroll-container-proizvodi {
     max-height: 600px;
     overflow-y: auto;
 }
 
-.proizvod-card {
+.proizvod-card-proizvodi {
     height: 320px;
     width: 100%;
     border: 1px solid #ddd;
@@ -817,7 +817,7 @@ input[type="checkbox"] {
     background: white;
 }
 
-.image-wrapper {
+.image-wrapper-proizvodi {
     width: 100%;
     height: 180px;
     display: flex;
@@ -826,26 +826,26 @@ input[type="checkbox"] {
     overflow: hidden;
 }
 
-    .image-wrapper img {
+    .image-wrapper-proizvodi img {
         max-height: 100%;
         max-width: 100%;
         object-fit: contain;
     }
 
-.wittgenstein {
+.wittgenstein-proizvodi {
     font-size: 14px;
     text-align: center;
     min-height: 40px;
 }
 
-.wittgenstein {
+.wittgenstein-proizvodi {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.volumen-cijena {
+.volumen-cijena-proizvodi {
     font-weight: bold;
     text-align: center;
 }
