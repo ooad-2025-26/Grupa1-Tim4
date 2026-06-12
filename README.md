@@ -23,9 +23,12 @@
     * Šifra: `AdnanovaLozinka!123`
     * Uloga: `Klijent`
 
-# Link za pristup _web_ aplikaciji
+# Link i šifra za pristup _web_ aplikaciji
 
-[]()
+[http://sakuraweb404-001-site1.rtempurl.com/](http://sakuraweb404-001-site1.rtempurl.com/)
+
+* Username: 11311886
+* Password: 60-dayfreetrial
 
 # Ako se _web_ aplikacija pokreće lokalno iz _Visual Studio_
 
