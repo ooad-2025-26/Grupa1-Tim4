@@ -483,3 +483,6 @@ $RECYCLE.BIN/
 
 # Env variables
 env.ps1
+
+.vscode
+.claude
