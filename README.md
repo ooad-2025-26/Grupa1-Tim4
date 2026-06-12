@@ -13,6 +13,11 @@
     * Šifra: `HvalaKemo!1`
     * Uloga: `Frizer`
 1) 
+    * Naziv: `Osman`
+    * Mail:  `sakuraweb67@gmail.com`
+    * Šifra: `KoZna1Zna2!`
+    * Uloga: `Frizer`
+1) 
     * Naziv: `Adnan`
     * Mail:  `amuradbego1@etf.unsa.ba`
     * Šifra: `AdnanovaLozinka!123`
