@@ -3,16 +3,19 @@
 # Neki od korištenih naloga
 
 1) 
-    * Naziv: ``
-    * Šifra: ``
+    * Naziv: `Administrator`
+    * Mail:  `sakurawebporuke@gmail.com`
+    * Šifra: `SakuraAdmin!123`
     * Uloga: `Administrator`
 1) 
-    * Naziv: ``
-    * Šifra: ``
+    * Naziv: `Kemal`
+    * Mail:  `cupcakemango404@gmail.com`
+    * Šifra: `HvalaKemo!1`
     * Uloga: `Frizer`
 1) 
-    * Naziv: ``
-    * Šifra: ``
+    * Naziv: `Adnan`
+    * Mail:  `amuradbego1@etf.unsa.ba`
+    * Šifra: `AdnanovaLozinka!123`
     * Uloga: `Klijent`
 
 # Link za pristup _web_ aplikaciji
