@@ -42,6 +42,36 @@
                         <span asp-validation-for="poeniPr" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label class="control-label">Benefiti</label>
+                        <div>
+                            @{
+                                var selectedBenefiti = (List<int>)ViewData["SelectedBenefitIds"]!;
+                            }
+                            @foreach (var benefit in (List<SakuraWeb.Models.Benefit>)ViewData["Benefiti"]!)
+                            {
+                                <div class="form-check">
+                                    <input type="checkbox" name="benefitIds" value="@benefit.id" class="form-check-input" id="benefit_@benefit.id" checked="@selectedBenefiti.Contains(benefit.id)" />
+                                    <label class="form-check-label" for="benefit_@benefit.id">@benefit.opis</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Sastojci</label>
+                        <div>
+                            @{
+                                var selectedSastojci = (List<int>)ViewData["SelectedSastojakIds"]!;
+                            }
+                            @foreach (var sastojak in (List<SakuraWeb.Models.Sastojak>)ViewData["Sastojci"]!)
+                            {
+                                <div class="form-check">
+                                    <input type="checkbox" name="sastojakIds" value="@sastojak.id" class="form-check-input" id="sastojak_@sastojak.id" checked="@selectedSastojci.Contains(sastojak.id)" />
+                                    <label class="form-check-label" for="sastojak_@sastojak.id">@sastojak.naziv</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label">Slika</label>
                         @if (!string.IsNullOrEmpty(Model.slikaPutanja))
                         {

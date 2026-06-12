@@ -37,6 +37,35 @@
                 <dd class="col-sm-10">
                     @Html.DisplayFor(model => model.volumen)
                 </dd>
+                <dt class="col-sm-2">
+                    Benefiti
+                </dt>
+                <dd class="col-sm-10">
+                    @{
+                        var benefiti = (List<SakuraWeb.Models.Benefit>)ViewData["ProizvodBenefiti"]!;
+                    }
+                    @if (benefiti.Any())
+                    {
+                        @string.Join(", ", benefiti.Select(b => b.opis))
+                    }
+                    else
+                    {
+                        <span>—</span>
+                    }
+                </dd>
+                <dt class="col-sm-2">
+                    Sastojci
+                </dt>
+                <dd class="col-sm-10">
+                    @if (Model.ProizvodSastojci.Any())
+                    {
+                        @string.Join(", ", Model.ProizvodSastojci.Select(ps => ps.sastojak.naziv))
+                    }
+                    else
+                    {
+                        <span>—</span>
+                    }
+                </dd>
             </dl>
 
             <div class="form-group mt-2">
