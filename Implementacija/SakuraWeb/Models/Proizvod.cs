@@ -30,6 +30,8 @@ namespace SakuraWeb.Models
 
         public ICollection<ProizvodSastojak> ProizvodSastojci { get; set; }
         = new List<ProizvodSastojak>();
+        public ICollection<ProizvodBenefit> ProizvodBenefiti { get; set; }
+        = new List<ProizvodBenefit>();
 
         // NOVO POLJE
         [Range(0, 12, ErrorMessage = "Bodovi proizvoda moraju biti između 0 i 12!")]

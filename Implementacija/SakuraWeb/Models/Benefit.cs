@@ -13,6 +13,9 @@ namespace SakuraWeb.Models
         [Required]
         public required string URLSlike { get; set; }
 
+        public ICollection<ProizvodBenefit> ProizvodBenefiti { get; set; }
+        = new List<ProizvodBenefit>();
+
         public Benefit()
         {
             id = -1;
