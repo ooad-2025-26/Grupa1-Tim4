@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SakuraWeb</title>
+    <title>@ViewData["Title"] - Sakura</title>
     <script type="importmap"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,33 +14,51 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     
     <!--<link rel="stylesheet" href="~/SakuraWeb.styles.css" asp-append-version="true" />-->
+    @if (User.IsInRole("Administrator"))
+    {
+    <style>
+        body {
+            background-image: url('/img/adminbg.png');
+            background-size: cover;
+            background-position: top 50px;
+            background-attachment: fixed;
+        }
+    </style>        
+    }
 </head>
 <body>
-    <div class="header">
-        <img class="" src="~/img/Header.svg" />
+    @if (User.IsInRole("Administrator"))
+    {
+    <div class="header" style="background-color: white;">
+        <img class="" src="/img/AdminHeader.svg" />
     </div>
-    @{
-        string ActiveClass(string link)
+    } else
+    {
+    <div class="header">
+        <img class="" src="/img/Header.svg" />
+    </div>
+    
+    string ActiveClass(string link)
+    {
+        var current = ViewContext.HttpContext.Request.Path.Value ?? string.Empty;
+        var target = link ?? string.Empty;
+        if (string.IsNullOrEmpty(target)) return "sakura-lightgray";
+        // Ensure a leading / so comparisons are consistent
+        if (!target.StartsWith('/'))
         {
-            var current = ViewContext.HttpContext.Request.Path.Value ?? string.Empty;
-            var target = link ?? string.Empty;
-            if (string.IsNullOrEmpty(target)) return "sakura-lightgray";
-            // Ensure a leading / so comparisons are consistent
-            if (!target.StartsWith('/'))
-            {
-                target = Url.Content(target);
-            }
-            if (target == "/")
-            {
-                return current == "/" ? "sakura-btn-active" : "sakura-lightgray";
-            }
-            if (current.Equals(target, System.StringComparison.OrdinalIgnoreCase) || current.StartsWith(target + "/", System.StringComparison.OrdinalIgnoreCase))
-            {
-                return "sakura-btn-active";
-            }
-            return "sakura-lightgray";
+            target = Url.Content(target);
         }
+        if (target == "/")
+        {
+            return current == "/" ? "sakura-btn-active" : "sakura-lightgray";
+        }
+        if (current.Equals(target, System.StringComparison.OrdinalIgnoreCase) || current.StartsWith(target + "/", System.StringComparison.OrdinalIgnoreCase))
+        {
+            return "sakura-btn-active";
+        }
+        return "sakura-lightgray";
     }
+    
     <div class="navbar navbar-expand">
         <div class="container-fluid d-flex justify-content-between">
             <!-- LEFT -->
@@ -57,6 +75,8 @@
 
         </div>
     </div>
+    }
+        
 
     <main role="main" class="pb-3">
         @RenderBody()

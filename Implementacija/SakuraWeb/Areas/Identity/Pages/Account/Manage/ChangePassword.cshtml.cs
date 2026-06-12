@@ -118,6 +118,14 @@ public class ChangePasswordModel : PageModel
             return RedirectToPage();
         }
 
+        // Fetch the user back from DB to get the updated hash and sync lozinka
+        var updatedUser = await _userManager.FindByIdAsync(user.Id);
+        if (updatedUser != null)
+        {
+            updatedUser.lozinka = updatedUser.PasswordHash;
+            await _userManager.UpdateAsync(updatedUser);
+        }
+
         await _signInManager.RefreshSignInAsync(user);
         _logger.LogInformation("User changed their password successfully.");
         StatusMessage = "Vaša lozinka je uspješno promijenjena.";

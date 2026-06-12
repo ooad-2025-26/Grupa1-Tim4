@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Korisnik> SignInManager
+@inject UserManager<Korisnik> UserManager
+
+@if (User.IsInRole("Administrator"))
+{
+    <div class="d-flex justify-content-end container mt-4">
+        <div class="d-3 d-flex align-items-center gap-2">
+            <a asp-controller="Home" asp-action="Index">
+                <img src="/img/UserNoBG.svg" style="width: 40px; height: 40px; margin-right: 10px;">
+            </a>
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="sakura-btn-dark">Odjava</button>
+            </form>
+        </div>
+    </div>
+}

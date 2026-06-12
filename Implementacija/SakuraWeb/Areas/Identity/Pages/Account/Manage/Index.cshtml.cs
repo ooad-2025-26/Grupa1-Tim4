@@ -118,6 +118,9 @@ public class IndexModel : PageModel
                 StatusMessage = "Greška pri ažuriranju korisničkog imena.";
                 return RedirectToPage();
             }
+            // Sync custom field with updated UserName
+            user.korisnickoIme = Input.KorisnickoIme;
+            await _userManager.UpdateAsync(user);
         }
         if (Input.PretplatiteSeNaNewsletter != user.jePretplacenNaNewsletter)
         {

@@ -1,54 +1,29 @@
 ﻿@model SakuraWeb.Models.Korisnik
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Reset lozinke";
 }
 
-<h1>Edit</h1>
+<div class="container mt-4">
+    <partial name="_AdminNavPartial"></partial>
+    <div class="text-center">
+        <h1 class="admin-panel-heading">Reset lozinke</h1><br>
+    </div>
 
-<h4>Korisnik</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg" style="max-width: 600px; margin: 0 auto;">
+        <p class="text-center" style="font-size: 18px; margin-bottom: 30px;">
+            Kliknite dugme ispod da bi resetovali lozinku za korisnika <strong>@Model.korisnickoIme</strong>.
+        </p>
+
+        <form asp-action="ResetPassword" method="post">
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="korisnickoIme" class="control-label"></label>
-                <input asp-for="korisnickoIme" class="form-control" />
-                <span asp-validation-for="korisnickoIme" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="emailAdresa" class="control-label"></label>
-                <input asp-for="emailAdresa" class="form-control" />
-                <span asp-validation-for="emailAdresa" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="lozinka" class="control-label"></label>
-                <input asp-for="lozinka" class="form-control" />
-                <span asp-validation-for="lozinka" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="jePretplacenNaNewsletter" /> @Html.DisplayNameFor(model => model.jePretplacenNaNewsletter)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ulogaKorisnika" class="control-label"></label>
-                <select asp-for="ulogaKorisnika" class="form-control"></select>
-                <span asp-validation-for="ulogaKorisnika" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="text-center">
+                <button type="submit" class="sakura-btn-coldpink" style="font-size: 18px!important; width: 100%;">Resetuj lozinku</button>
             </div>
         </form>
+
+        <div class="text-center mt-3">
+            <a asp-action="Index" class="sakura-btn-dark">Nazad</a>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
