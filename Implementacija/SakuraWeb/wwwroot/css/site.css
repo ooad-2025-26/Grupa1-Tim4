@@ -805,6 +805,7 @@ input[type="checkbox"] {
 .edit-dugme {
     background-color: var(--sakura-lightgray);
     border: none;
+}•
 .scroll-container-proizvodi {
     max-height: 600px;
     overflow-y: auto;
