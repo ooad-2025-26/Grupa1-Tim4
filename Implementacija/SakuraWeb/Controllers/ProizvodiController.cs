@@ -183,6 +183,8 @@ namespace SakuraWeb.Controllers
                     // Update Benefiti veze
                     var postojeceBenefiti = _context.proizvodiBenefiti.Where(pb => pb.proizvodId == id);
                     _context.proizvodiBenefiti.RemoveRange(postojeceBenefiti);
+                    await _context.SaveChangesAsync(); // flush removal, detach tracked entities
+                    
                     if (benefitIds != null)
                     {
                         foreach (var bId in benefitIds)
@@ -190,10 +192,13 @@ namespace SakuraWeb.Controllers
                             _context.proizvodiBenefiti.Add(new ProizvodBenefit { proizvodId = id, benefitId = bId });
                         }
                     }
-        
+                    await _context.SaveChangesAsync();
+                    
                     // Update Sastojci veze
                     var postojeciSastojci = _context.proizvodiSastojci.Where(ps => ps.proizvodId == id);
                     _context.proizvodiSastojci.RemoveRange(postojeciSastojci);
+                    await _context.SaveChangesAsync(); // flush removal, detach tracked entities
+                    
                     if (sastojakIds != null)
                     {
                         foreach (var sId in sastojakIds)
@@ -201,7 +206,6 @@ namespace SakuraWeb.Controllers
                             _context.proizvodiSastojci.Add(new ProizvodSastojak { proizvodId = id, sastojakId = sId });
                         }
                     }
-        
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
