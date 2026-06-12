@@ -64,8 +64,11 @@ namespace SakuraWeb.Controllers
             var proizvod = await _context.proizvodi
                 .Include(p => p.ProizvodSastojci)
                     .ThenInclude(ps => ps.sastojak)
+                //.FirstOrDefaultAsync(p => p.id == id)
+                .Include(p => p.ProizvodBenefiti)
+                    .ThenInclude(pb => pb.benefit)
                 .FirstOrDefaultAsync(p => p.id == id);
-
+            //var proizvod1 = await _context.proizvodi
             if (proizvod == null)
             {
                 return NotFound();
@@ -77,6 +80,14 @@ namespace SakuraWeb.Controllers
                 .Select(pb => pb.benefit)
                 .ToListAsync();
 
+            /*foreach (var ps in proizvod.ProizvodSastojci)
+            {
+                Console.WriteLine(ps.sastojak.naziv);
+            }
+            foreach (var pb in proizvod.ProizvodBenefiti)
+            {
+                Console.WriteLine(pb.benefit.opis);
+            }*/
             return View(proizvod);
         }
 
