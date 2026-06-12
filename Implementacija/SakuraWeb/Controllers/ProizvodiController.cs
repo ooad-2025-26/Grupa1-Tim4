@@ -23,9 +23,35 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Proizvodi
-        public async Task<IActionResult> Index()
+        /*public async Task<IActionResult> Index()
         {
             return View(await _context.proizvodi.ToListAsync());
+        }*/
+
+        public async Task<IActionResult> Index(string? sort)
+        {
+            IQueryable<Proizvod> query = _context.proizvodi;
+
+            switch (sort)
+            {
+                case "CijenaUzlazno":
+                    query = query.OrderBy(p => p.cijena);
+                    break;
+
+                case "CijenaSilazno":
+                    query = query.OrderByDescending(p => p.cijena);
+                    break;
+
+                case "NazivUzlazno":
+                    query = query.OrderBy(p => p.naziv);
+                    break;
+
+                case "NazivSilazno":
+                    query = query.OrderByDescending(p => p.naziv);
+                    break;
+            }
+
+            return View(await query.ToListAsync());
         }
 
         // GET: Proizvodi/Details/5

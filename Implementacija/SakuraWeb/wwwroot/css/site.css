@@ -853,3 +853,7 @@ input[type="checkbox"] {
     font-weight: bold;
     text-align: center;
 }
+
+.sort-filter-dropdown {
+    min-width: 220px;
+}
