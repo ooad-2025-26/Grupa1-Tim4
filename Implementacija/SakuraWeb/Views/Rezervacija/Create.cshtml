@@ -1,56 +1,245 @@
-﻿@model SakuraWeb.Models.Rezervacija
-
-@{
-    ViewData["Title"] = "Create";
+﻿@{
+    ViewData["Title"] = "Rezervacija";
+    var usluge = (List<SakuraWeb.Models.Usluga>)ViewBag.Usluge;
+    var grupisano = usluge.GroupBy(u => u.kategorija);
 }
 
-<h1>Create</h1>
+<div class="background">
+    <img class="background bh" src="~/img/Group175.svg" />
+</div>
 
-<h4>Rezervacija</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="datumRezervacije" class="control-label"></label>
-                <input asp-for="datumRezervacije" class="form-control" />
-                <span asp-validation-for="datumRezervacije" class="text-danger"></span>
+<div class="container mt-5">
+    <div class="row">
+
+        <!-- LIJEVA STRANA - USLUGE -->
+        <div class="col-6">
+            <div class="p-3">
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @foreach (var greska in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div>@greska.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                @foreach (var grupa in grupisano)
+                {
+                    <h2>@grupa.Key</h2>
+                    <div class="mb-3">
+                        @foreach (var usluga in grupa)
+                        {
+                            <div class="d-flex">
+                                <input class="form-check-input me-3 mt-1 usluga-radio"
+                                       type="radio"
+                                       name="uslugaId"
+                                       value="@usluga.id"
+                                       data-trajanje="@usluga.trajanje"
+                                       form="rezervacijaForm">
+
+                                <div class="flex-grow-1">
+                                    <div>@usluga.naziv</div>
+                                    <small class="text-secondary">@usluga.trajanje min</small>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-center" style="min-width:100px">
+                                    @usluga.cijena KM
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <br>
+                }
             </div>
-            <div class="form-group">
-                <label asp-for="vrijemeTermina" class="control-label"></label>
-                <input asp-for="vrijemeTermina" class="form-control" />
-                <span asp-validation-for="vrijemeTermina" class="text-danger"></span>
+        </div>
+
+        <!-- DESNA STRANA - TERMINI -->
+        <div class="col-6">
+            <div class="p-3">
+                <div class="shadow-lg rounded-4 p-4 w-100 sakura-coldpink">
+                    <h2 class="pad"><center>Termini</center></h2>
+
+                    <form id="rezervacijaForm" asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label for="datumRezervacije" class="form-label">Datum</label>
+                            <input type="date" id="datumRezervacije" name="datumRezervacije" class="form-control" required
+                                   value="@DateTime.Today.ToString("yyyy-MM-dd")" min="@DateTime.Today.ToString("yyyy-MM-dd")">
+                        </div>
+
+                        <div class="button-grid" id="terminiGrid" style="padding-bottom: 5%;">
+                            @{
+                                var pocetak = new TimeSpan(9, 0, 0);
+                                var kraj = new TimeSpan(16, 30, 0);
+                            }
+                            @for (var t = pocetak; t <= kraj; t = t.Add(TimeSpan.FromMinutes(30)))
+                            {
+                                var vrijemeStr = t.ToString(@"hh\:mm");
+                                <button type="button" class="btn termin-btn" data-vrijeme="@vrijemeStr">
+                                    @t.ToString(@"hh\:mm")
+                                </button>
+                            }
+                        </div>
+
+                        <input type="hidden" id="pocetnoVrijeme" name="pocetnoVrijeme" required>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="reset" class="btn btn-clear" id="ocistiBtn">
+                                Očisti formular
+                            </button>
+
+                            <button type="submit" class="btn btn-reserve" id="rezervisiBtn" disabled>
+                                Rezerviši
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="otkazana" /> @Html.DisplayNameFor(model => model.otkazana)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ocjena" class="control-label"></label>
-                <input asp-for="ocjena" class="form-control" />
-                <span asp-validation-for="ocjena" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="korisnikId" class="control-label"></label>
-                <select asp-for="korisnikId" class ="form-control" asp-items="ViewBag.korisnikId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="uslugaId" class="control-label"></label>
-                <select asp-for="uslugaId" class ="form-control" asp-items="ViewBag.uslugaId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        const terminiGrid = document.getElementById("terminiGrid");
+        const terminButtons = Array.from(document.querySelectorAll(".termin-btn"));
+        const datumInput = document.getElementById("datumRezervacije");
+        const pocetnoVrijemeInput = document.getElementById("pocetnoVrijeme");
+        const rezervisiBtn = document.getElementById("rezervisiBtn");
+        const ocistiBtn = document.getElementById("ocistiBtn");
+
+        let zauzetiSlotovi = new Set();
+        let selektovaniPocetak = null;
+
+        const sviTermini = terminButtons.map(b => b.dataset.vrijeme);
+
+        function vrijemeUMinute(v) {
+            const [h, m] = v.split(":").map(Number);
+            return h * 60 + m;
+        }
+
+        function dobijTrajanjeOdabraneUsluge() {
+            const checked = document.querySelector(".usluga-radio:checked");
+            if (!checked) return null;
+            return parseInt(checked.dataset.trajanje, 10);
+        }
+
+        function brojTermina(trajanje) {
+            return Math.ceil(trajanje / 30);
+        }
+
+        function minuteUVrijeme(min) {
+            const h = Math.floor(min / 60).toString().padStart(2, "0");
+            const m = (min % 60).toString().padStart(2, "0");
+            return `${h}:${m}`;
+        }
+
+        function osvjeziPrikaz() {
+            const trajanje = dobijTrajanjeOdabraneUsluge();
+
+            terminButtons.forEach(btn => {
+                const vrijeme = btn.dataset.vrijeme;
+                btn.classList.remove("zauzeto", "selected", "u-rasponu");
+                btn.disabled = false;
+
+                if (zauzetiSlotovi.has(vrijeme)) {
+                    btn.classList.add("zauzeto");
+                    btn.disabled = true;
+                }
+            });
+
+            if (trajanje) {
+                const potrebno = brojTermina(trajanje);
+                terminButtons.forEach(btn => {
+                    if (btn.disabled) return;
+                    const start = vrijemeUMinute(btn.dataset.vrijeme);
+                    for (let i = 0; i < potrebno; i++) {
+                        const slotVrijeme = start + i * 30;
+                        const slotStr = minuteUVrijeme(slotVrijeme);
+                        if (!sviTermini.includes(slotStr) || zauzetiSlotovi.has(slotStr)) {
+                            btn.disabled = true;
+                            break;
+                        }
+                    }
+                });
+            }
+
+            if (selektovaniPocetak && trajanje) {
+                const potrebno = brojTermina(trajanje);
+                const start = vrijemeUMinute(selektovaniPocetak);
+                terminButtons.forEach(btn => {
+                    const t = vrijemeUMinute(btn.dataset.vrijeme);
+                    if (t >= start && t < start + potrebno * 30) {
+                        btn.classList.add(t === start ? "selected" : "u-rasponu");
+                    }
+                });
+            }
+
+            rezervisiBtn.disabled = !(selektovaniPocetak && trajanje);
+            pocetnoVrijemeInput.value = selektovaniPocetak || "";
+        }
+
+        async function ucitajZauzeteTermine() {
+            const datum = datumInput.value;
+            if (!datum) return;
+
+            try {
+                const response = await fetch(`/Rezervacija/ZauzetiTermini?datum=${datum}`);
+                const data = await response.json();
+                zauzetiSlotovi = new Set(data);
+            } catch (err) {
+                console.error("Greška pri učitavanju termina:", err);
+                zauzetiSlotovi = new Set();
+            }
+
+            selektovaniPocetak = null;
+            osvjeziPrikaz();
+        }
+
+        terminButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (btn.disabled) return;
+                selektovaniPocetak = btn.dataset.vrijeme;
+                osvjeziPrikaz();
+            });
+        });
+
+        document.querySelectorAll(".usluga-radio").forEach(radio => {
+            radio.addEventListener("change", () => {
+                selektovaniPocetak = null;
+                osvjeziPrikaz();
+            });
+        });
+
+        datumInput.addEventListener("change", ucitajZauzeteTermine);
+
+        ocistiBtn.addEventListener("click", () => {
+            setTimeout(() => {
+                selektovaniPocetak = null;
+                zauzetiSlotovi = new Set();
+                ucitajZauzeteTermine();
+            }, 0);
+        });
+
+        ucitajZauzeteTermine();
+    </script>
+
+    <style>
+        .termin-btn.zauzeto {
+            background-color: #ddd !important;
+            color: #999 !important;
+            cursor: not-allowed;
+        }
+        .termin-btn.selected {
+            background-color: var(--sakura-hotpink) !important;
+            color: white !important;
+        }
+        .termin-btn.u-rasponu {
+            background-color: var(--sakura-coldpink) !important;
+            color: white !important;
+        }
+    </style>
 }

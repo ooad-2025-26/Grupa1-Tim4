@@ -25,10 +25,15 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Usluga
-        [Authorize(Roles = "Klijent, Administrator, Frizer")]
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.usluge.ToListAsync());
+            var usluge = await _context.usluge
+                .OrderBy(u => u.kategorija)
+                .ThenBy(u => u.naziv)
+                .ToListAsync();
+
+            return View(usluge);
         }
 
         // GET: Usluga/Details/5
