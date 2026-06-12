@@ -9,11 +9,11 @@
 1) 
     * Naziv: ``
     * Šifra: ``
-    * Uloga: Frizer
+    * Uloga: `Frizer`
 1) 
     * Naziv: ``
     * Šifra: ``
-    * Uloga: Klijent
+    * Uloga: `Klijent`
 
 # Link za pristup _web_ aplikaciji
 
