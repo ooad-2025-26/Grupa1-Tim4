@@ -33,6 +33,10 @@ namespace SakuraWeb.Controllers
                 .ThenBy(u => u.naziv)
                 .ToListAsync();
 
+            ViewBag.Frizeri = await _context.korisnici
+                .Where(k => k.ulogaKorisnika == Uloga.Frizer)
+                .ToListAsync();
+
             return View(usluge);
         }
 

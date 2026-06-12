@@ -23,11 +23,6 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Proizvodi
-        /*public async Task<IActionResult> Index()
-        {
-            return View(await _context.proizvodi.ToListAsync());
-        }*/
-
         public async Task<IActionResult> Index(string? sort, KategorijaProizvoda? kategorija)
         {
             IQueryable<Proizvod> query = _context.proizvodi;

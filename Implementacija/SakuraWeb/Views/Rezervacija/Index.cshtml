@@ -1,65 +1,242 @@
-﻿@model IEnumerable<SakuraWeb.Models.Rezervacija>
+@model IEnumerable<SakuraWeb.Models.Rezervacija>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Vaši termini";
 }
 
-<h1>Index</h1>
+@functions {
+    static readonly string[] DaniSedmice = { "Nedjelja", "Ponedjeljak", "Utorak", "Srijeda", "Četvrtak", "Petak", "Subota" };
+    static readonly string[] Mjeseci = { "januar", "februar", "mart", "april", "maj", "juni", "juli", "august", "septembar", "oktobar", "novembar", "decembar" };
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.datumRezervacije)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.vrijemeTermina)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.otkazana)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ocjena)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.korisnik)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.usluga)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.datumRezervacije)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.vrijemeTermina)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.otkazana)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ocjena)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.korisnik.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.usluga.id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
+    static string FormatDatum(DateTime datum)
+    {
+        return $"{DaniSedmice[(int)datum.DayOfWeek]}, {datum.Day}. {Mjeseci[datum.Month - 1]} {datum.Year}.";
+    }
 }
-    </tbody>
-</table>
+
+@if (User.IsInRole("Administrator"))
+{
+    <partial name="_AdminNavPartial"></partial>
+
+    <div class="shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg mb-4 mt-4">
+        <h2 class="text-center mb-4 admin-panel-heading">Pregled termina</h2>
+
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Datum rezervacije</th>
+                        <th>Vrijeme termina</th>
+                        <th>Otkazana?</th>
+                        <th>Ocjena</th>
+                        <th>Klijent</th>
+                        <th>Frizer</th>
+                        <th>Usluga</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.datumRezervacije)</td>
+                            <td>@item.vrijemeTermina.ToString("HH:mm")</td>
+                            <td>@(item.otkazana ? "Da" : "Ne")</td>
+                            <td>@Html.DisplayFor(modelItem => item.ocjena)</td>
+                            <td>
+                                @if (item.klijent != null)
+                                {
+                                    <a asp-controller="Racun" asp-action="Details" asp-route-id="@item.klijentId">@item.klijent.korisnickoIme</a>
+                                }
+                                else
+                                {
+                                    @:-
+                                }
+                            </td>
+                            <td>
+                                @if (item.frizer != null)
+                                {
+                                    <a asp-controller="Racun" asp-action="Details" asp-route-id="@item.frizerId">@item.frizer.korisnickoIme</a>
+                                }
+                                else
+                                {
+                                    @:Nije dodijeljen
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="Usluga" asp-action="Edit" asp-route-id="@item.uslugaId">@item.usluga.naziv</a>
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.id">Pomjeri</a>
+                                @if (!item.otkazana)
+                                {
+                                    <text> | </text>
+                                    <form asp-action="Otkazi" asp-route-id="@item.id" method="post" class="d-inline" onsubmit="return confirm('Da li ste sigurni da želite otkazati termin?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-link p-0 align-baseline">Otkaži</button>
+                                    </form>
+                                }
+                                <text> | </text>
+                                <a asp-action="Delete" asp-route-id="@item.id">Izbriši</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    bool jeFrizer = User.IsInRole("Frizer");
+
+    double? prosjecnaOcjena = null;
+    if (jeFrizer)
+    {
+        var ocjene = Model.Where(r => r.ocjena > 0).Select(r => r.ocjena).ToList();
+        if (ocjene.Any())
+        {
+            prosjecnaOcjena = ocjene.Average();
+        }
+    }
+
+    <header class="push-it-down" style="background-image: url('/img/clocks.png'); color: black">
+        <h1 class="stack-sans-headline-h1 text-center"><b>Vaši termini</b></h1>
+    </header>
+
+    @if (prosjecnaOcjena.HasValue)
+    {
+        int puneZvijezde = (int)Math.Round(prosjecnaOcjena.Value);
+
+        <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+            <span class="stack-sans-headline-username">Vaša prosječna ocjena: @prosjecnaOcjena.Value.ToString("0.0")</span>
+            <div>
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <img src="/img/@(i <= puneZvijezde ? "StarSet.svg" : "StarUnset.svg")">
+                }
+            </div>
+        </div>
+    }
+
+    <div class="container pd-5 mx-auto" style="max-width: 1000px;">
+        @if (!Model.Any())
+        {
+            <p class="text-center mt-4">Nemate zakazanih termina.</p>
+        }
+
+        @foreach (var item in Model)
+        {
+            var krajTermina = item.vrijemeTermina.AddMinutes(item.usluga.trajanje);
+            bool jeOtkazan = item.otkazana;
+            bool jeZavrsen = !jeOtkazan && krajTermina < DateTime.Now;
+            bool jeNadolazeci = !jeOtkazan && !jeZavrsen;
+
+            var drugaStrana = jeFrizer ? item.klijent : item.frizer;
+            var imeDrugeStrane = drugaStrana?.korisnickoIme ?? "Nije dodijeljen";
+
+            <div class="termin">
+                <div class="container-fluid d-flex justify-content-between align-items-center">
+                    <div class="d-flex gap-2">
+                        <h2 class="stack-sans-headline-datum" style="color: black">@FormatDatum(item.datumRezervacije)</h2>
+                    </div>
+                    @if (jeOtkazan)
+                    {
+                        <div class="termin-status">
+                            <i>Termin je otkazan</i>
+                        </div>
+                    }
+                    else if (jeZavrsen)
+                    {
+                        <div class="termin-status">
+                            <i>Termin je završen</i>
+                        </div>
+                    }
+                    <div class="d-flex gap-2">
+                        <h2 class="stack-sans-headline-datum sakura-dimmedgray">@item.vrijemeTermina.ToString("HH:mm")</h2>
+                    </div>
+                </div>
+                <div class="container-fluid d-flex justify-content-between">
+                    <div class="d-flex gap-2">
+                        <div class="termin-usluga">
+                            <span style="color: #1E1E1E">@item.usluga.naziv</span>
+                            <div class="d-flex justify-content-between" style="color: #757575">
+                                <span>@item.usluga.trajanje min</span>
+                                <span>@item.usluga.cijena KM</span>
+                            </div>
+                        </div>
+                        <div class="border-start border-2 border-dark ps-2 d-flex align-items-center">
+                            <img src="/img/User.svg">
+                            <span class="stack-sans-headline-username">@imeDrugeStrane</span>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        @if (jeNadolazeci)
+                        {
+                            <form asp-action="Otkazi" asp-route-id="@item.id" method="post" onsubmit="return confirm('Da li ste sigurni da želite otkazati termin?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="sakura-btn-coldpink">Otkaži</button>
+                            </form>
+                        }
+                        else if (jeZavrsen && !jeFrizer)
+                        {
+                            @if (item.ocjena > 0)
+                            {
+                                <div>
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <img src="/img/@(i <= item.ocjena ? "StarSet.svg" : "StarUnset.svg")">
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <form asp-action="Ocijeni" asp-route-id="@item.id" method="post" class="d-flex gap-2 align-items-center rating-form">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="ocjena" class="ocjena-input" value="0" />
+                                    <div class="star-rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <img src="/img/StarUnset.svg" data-value="@i" class="star-icon" style="cursor:pointer">
+                                        }
+                                    </div>
+                                    <button type="submit" class="sakura-btn-dark">Ocijeni</button>
+                                </form>
+                            }
+                        }
+                        else if (jeZavrsen && jeFrizer && item.ocjena > 0)
+                        {
+                            <div>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <img src="/img/@(i <= item.ocjena ? "StarSet.svg" : "StarUnset.svg")">
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @section Scripts {
+        <script>
+            document.querySelectorAll(".rating-form").forEach(form => {
+                const stars = Array.from(form.querySelectorAll(".star-icon"));
+                const input = form.querySelector(".ocjena-input");
+
+                stars.forEach(star => {
+                    star.addEventListener("click", () => {
+                        const vrijednost = parseInt(star.dataset.value, 10);
+                        input.value = vrijednost;
+                        stars.forEach(s => {
+                            s.src = parseInt(s.dataset.value, 10) <= vrijednost
+                                ? "/img/StarSet.svg"
+                                : "/img/StarUnset.svg";
+                        });
+                    });
+                });
+            });
+        </script>
+    }
+}

@@ -1,59 +1,43 @@
-﻿@model SakuraWeb.Models.Rezervacija
+@model SakuraWeb.Models.Rezervacija
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Pomjeri termin";
 }
 
-<h1>Edit</h1>
+<div class="shadow-lg rounded-4 p-4 w-100 sakura-lightgray-bg mb-4 mt-4">
+    <h2 class="text-center mb-4 admin-panel-heading">Pomjeri termin</h2>
 
-<h4>Rezervacija</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
-            <div class="form-group">
-                <label asp-for="datumRezervacije" class="control-label"></label>
-                <input asp-for="datumRezervacije" class="form-control" />
-                <span asp-validation-for="datumRezervacije" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="vrijemeTermina" class="control-label"></label>
-                <input asp-for="vrijemeTermina" class="form-control" />
-                <span asp-validation-for="vrijemeTermina" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="otkazana" /> @Html.DisplayNameFor(model => model.otkazana)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="ocjena" class="control-label"></label>
-                <input asp-for="ocjena" class="form-control" />
-                <span asp-validation-for="ocjena" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="korisnikId" class="control-label"></label>
-                <select asp-for="korisnikId" class="form-control" asp-items="ViewBag.korisnikId"></select>
-                <span asp-validation-for="korisnikId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="uslugaId" class="control-label"></label>
-                <select asp-for="uslugaId" class="form-control" asp-items="ViewBag.uslugaId"></select>
-                <span asp-validation-for="uslugaId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-4">Usluga</dt>
+                <dd class="col-sm-8">@Model.usluga.naziv</dd>
+
+                <dt class="col-sm-4">Klijent</dt>
+                <dd class="col-sm-8">@Model.klijent.korisnickoIme</dd>
+
+                <dt class="col-sm-4">Frizer</dt>
+                <dd class="col-sm-8">@(Model.frizer?.korisnickoIme ?? "Nije dodijeljen")</dd>
+            </dl>
+
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="id" />
+                <div class="form-group mb-3">
+                    <label for="datumRezervacije" class="control-label">Datum</label>
+                    <input type="date" id="datumRezervacije" name="datumRezervacije" class="form-control" value="@Model.datumRezervacije.ToString("yyyy-MM-dd")" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="vrijemeTermina" class="control-label">Vrijeme</label>
+                    <input type="time" id="vrijemeTermina" name="vrijemeTermina" class="form-control" value="@Model.vrijemeTermina.ToString("HH:mm")" required>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Pomjeri" class="sakura-btn-dark" />
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Nazad na pregled</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

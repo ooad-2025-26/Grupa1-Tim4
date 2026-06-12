@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,22 +16,113 @@ namespace SakuraWeb.Controllers
     public class RezervacijaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEmailSender _emailSender;
 
-        public RezervacijaController(ApplicationDbContext context)
+        public RezervacijaController(ApplicationDbContext context, IEmailSender emailSender)
         {
             _context = context;
+            _emailSender = emailSender;
         }
 
+        private static string FormatDatum(DateTime datum) => datum.ToString("dd.MM.yyyy.");
+        private static string FormatVrijeme(DateTime vrijeme) => vrijeme.ToString("HH:mm");
+
         // GET: Rezervacija
-        [Authorize(Roles = "Administrator, Klijent, Zaposlenik")]
+        [Authorize(Roles = "Administrator, Klijent, Frizer")]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.rezervacije.Include(r => r.korisnik).Include(r => r.usluga);
-            return View(await applicationDbContext.ToListAsync());
+            var rezervacije = _context.rezervacije
+                .Include(r => r.klijent)
+                .Include(r => r.frizer)
+                .Include(r => r.usluga);
+
+            if (User.IsInRole("Administrator"))
+            {
+                return View(await rezervacije.OrderByDescending(r => r.vrijemeTermina).ToListAsync());
+            }
+
+            var korisnikId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var moje = User.IsInRole("Frizer")
+                ? rezervacije.Where(r => r.frizerId == korisnikId)
+                : rezervacije.Where(r => r.klijentId == korisnikId);
+
+            return View(await moje.OrderByDescending(r => r.vrijemeTermina).ToListAsync());
+        }
+
+        // POST: Rezervacija/Otkazi/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Klijent, Frizer")]
+        public async Task<IActionResult> Otkazi(int id)
+        {
+            var rezervacija = await _context.rezervacije
+                .Include(r => r.klijent)
+                .Include(r => r.frizer)
+                .Include(r => r.usluga)
+                .FirstOrDefaultAsync(r => r.id == id);
+            if (rezervacija == null)
+            {
+                return NotFound();
+            }
+
+            var korisnikId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!User.IsInRole("Administrator") && rezervacija.klijentId != korisnikId && rezervacija.frizerId != korisnikId)
+            {
+                return Forbid();
+            }
+
+            rezervacija.otkazana = true;
+            await _context.SaveChangesAsync();
+
+            var frizerIme = rezervacija.frizer?.korisnickoIme ?? "Nije dodijeljen";
+            var datum = FormatDatum(rezervacija.datumRezervacije);
+            var vrijeme = FormatVrijeme(rezervacija.vrijemeTermina);
+
+            await _emailSender.SendEmailAsync(
+                rezervacija.klijent.emailAdresa,
+                "[Sakura] Otkazana rezervacija",
+                $"Vaša rezervacija usluge \"{rezervacija.usluga.naziv}\" kod frizera {frizerIme} na datum {datum} u {vrijeme} sati je otkazana");
+
+            if (rezervacija.frizer != null)
+            {
+                await _emailSender.SendEmailAsync(
+                    rezervacija.frizer.emailAdresa,
+                    "[Sakura] Otkazana rezervacija",
+                    $"Rezervacija usluge \"{rezervacija.usluga.naziv}\" klijent {rezervacija.klijent.korisnickoIme} kod vas na datum {datum} u {vrijeme} sati je otkazana");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Rezervacija/Ocijeni/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Klijent")]
+        public async Task<IActionResult> Ocijeni(int id, int ocjena)
+        {
+            var rezervacija = await _context.rezervacije.FindAsync(id);
+            if (rezervacija == null)
+            {
+                return NotFound();
+            }
+
+            var korisnikId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (rezervacija.klijentId != korisnikId)
+            {
+                return Forbid();
+            }
+
+            if (ocjena >= 1 && ocjena <= 5)
+            {
+                rezervacija.ocjena = ocjena;
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Rezervacija/Details/5
-        [Authorize(Roles = "Administrator, Klijent, Zaposlenik")]
+        [Authorize(Roles = "Administrator, Klijent, Frizer")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -39,7 +131,8 @@ namespace SakuraWeb.Controllers
             }
 
             var rezervacija = await _context.rezervacije
-                .Include(r => r.korisnik)
+                .Include(r => r.klijent)
+                .Include(r => r.frizer)
                 .Include(r => r.usluga)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (rezervacija == null)
@@ -67,12 +160,19 @@ namespace SakuraWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Klijent")]
-        public async Task<IActionResult> Create(DateTime datumRezervacije, TimeSpan pocetnoVrijeme, int uslugaId)
+        public async Task<IActionResult> Create(DateTime datumRezervacije, TimeSpan pocetnoVrijeme, int uslugaId, string frizerId)
         {
             var usluga = await _context.usluge.FindAsync(uslugaId);
             if (usluga == null)
             {
                 ModelState.AddModelError("", "Odabrana usluga ne postoji.");
+                return await VratiCreateView();
+            }
+
+            var frizer = await _context.korisnici.FindAsync(frizerId);
+            if (frizer == null || frizer.ulogaKorisnika != Uloga.Frizer)
+            {
+                ModelState.AddModelError("", "Odabrani frizer ne postoji.");
                 return await VratiCreateView();
             }
 
@@ -119,14 +219,15 @@ namespace SakuraWeb.Controllers
                 return await VratiCreateView();
             }
 
-            var korisnikId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var klijentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var rezervacija = new Rezervacija
             {
                 datumRezervacije = datumRezervacije.Date,
                 vrijemeTermina = datumRezervacije.Date.Add(pocetnoVrijeme),
                 otkazana = false,
                 ocjena = 0,
-                korisnikId = korisnikId,
+                klijentId = klijentId,
+                frizerId = frizerId,
                 uslugaId = uslugaId
             };
 
@@ -134,6 +235,13 @@ namespace SakuraWeb.Controllers
 
             _context.Add(rezervacija);
             await _context.SaveChangesAsync();
+
+            var klijent = await _context.korisnici.FindAsync(klijentId);
+            await _emailSender.SendEmailAsync(
+                klijent!.emailAdresa,
+                "[Sakura] Uspješna rezervacija",
+                $"Vaša rezervacija usluge \"{usluga.naziv}\" kod frizera {frizer.korisnickoIme} na datum {FormatDatum(rezervacija.datumRezervacije)} u {FormatVrijeme(rezervacija.vrijemeTermina)} sati je uspješna");
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -150,7 +258,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Edit/5
-        [Authorize(Roles = "Administrator, Klijent")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -158,51 +266,51 @@ namespace SakuraWeb.Controllers
                 return NotFound();
             }
 
-            var rezervacija = await _context.rezervacije.FindAsync(id);
+            var rezervacija = await _context.rezervacije
+                .Include(r => r.klijent)
+                .Include(r => r.frizer)
+                .Include(r => r.usluga)
+                .FirstOrDefaultAsync(r => r.id == id);
             if (rezervacija == null)
             {
                 return NotFound();
             }
-            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", rezervacija.korisnikId);
-            ViewData["uslugaId"] = new SelectList(_context.usluge, "id", "id", rezervacija.uslugaId);
             return View(rezervacija);
         }
 
         // POST: Rezervacija/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,datumRezervacije,vrijemeTermina,otkazana,ocjena,korisnikId,uslugaId")] Rezervacija rezervacija)
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Edit(int id, DateTime datumRezervacije, TimeSpan vrijemeTermina)
         {
-            if (id != rezervacija.id)
+            var rezervacija = await _context.rezervacije
+                .Include(r => r.klijent)
+                .Include(r => r.frizer)
+                .Include(r => r.usluga)
+                .FirstOrDefaultAsync(r => r.id == id);
+            if (rezervacija == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var stariDatum = rezervacija.datumRezervacije;
+            var staroVrijeme = rezervacija.vrijemeTermina;
+
+            rezervacija.datumRezervacije = datumRezervacije.Date;
+            rezervacija.vrijemeTermina = datumRezervacije.Date.Add(vrijemeTermina);
+
+            await _context.SaveChangesAsync();
+
+            if (rezervacija.datumRezervacije != stariDatum || rezervacija.vrijemeTermina != staroVrijeme)
             {
-                try
-                {
-                    _context.Update(rezervacija);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RezervacijaExists(rezervacija.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _emailSender.SendEmailAsync(
+                    rezervacija.klijent.emailAdresa,
+                    "[Sakura] Pomjerena rezervacija",
+                    $"Vaša rezervacija usluge \"{rezervacija.usluga.naziv}\" kod frizera {rezervacija.frizer?.korisnickoIme ?? "Nije dodijeljen"} na datum {FormatDatum(stariDatum)} u {FormatVrijeme(staroVrijeme)} sati je pomjerena na datum {FormatDatum(rezervacija.datumRezervacije)} u {FormatVrijeme(rezervacija.vrijemeTermina)} sati");
             }
-            ViewData["korisnikId"] = new SelectList(_context.korisnici, "id", "id", rezervacija.korisnikId);
-            ViewData["uslugaId"] = new SelectList(_context.usluge, "id", "id", rezervacija.uslugaId);
-            return View(rezervacija);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Rezervacija/Delete/5
@@ -215,7 +323,8 @@ namespace SakuraWeb.Controllers
             }
 
             var rezervacija = await _context.rezervacije
-                .Include(r => r.korisnik)
+                .Include(r => r.klijent)
+                .Include(r => r.frizer)
                 .Include(r => r.usluga)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (rezervacija == null)

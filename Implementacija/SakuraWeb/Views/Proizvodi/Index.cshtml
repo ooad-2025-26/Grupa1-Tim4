@@ -71,18 +71,7 @@
     <h1 class="stack-sans-headline-h1 sakura-hotpink text-center">Proizvodi</h1>
 </header>
 
-<!--<form asp-action="Create">
-                <input type="submit" value="Create" class="sakura-btn-dimmed" />
-            </form>-->
-
 <div class="container">
-    <!--<div class="d-flex justify-content-end">
-        <div class="d-3">
-            
-            <button class="sakura-btn-dimmed" asp-action="Create">Filtriraj</button>
-            <button class="sakura-btn-dark">Sortiraj</button>
-        </div>
-    </div>-->
     <form asp-controller="Proizvodi" asp-action="Index" method="get">
         <input type="hidden" id="sort" name="sort" value="@ViewBag.Sort" />
         <input type="hidden" id="kategorija" name="kategorija" value="@ViewBag.Kategorija" />
@@ -143,131 +132,9 @@
 
         </div>
     </form>
-    <!--<div class="d-flex justify-content-end gap-3">
-        <div class="dropdown">
-            <button class="sakura-btn-dark dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    style="padding-left:50px;padding-right:50px;">
-                Sortiraj
-            </button>
-
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li>
-                    <a class="dropdown-item"
-                       asp-controller="Proizvodi"
-                       asp-action="Index"
-                       asp-route-sort="CijenaUzlazno">
-                        Cijena uzlazno
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-controller="Proizvodi"
-                       asp-action="Index"
-                       asp-route-sort="CijenaSilazno">
-                        Cijena silazno
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-controller="Proizvodi"
-                       asp-action="Index"
-                       asp-route-sort="NazivUzlazno">
-                        Naziv uzlazno
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item"
-                       asp-controller="Proizvodi"
-                       asp-action="Index"
-                       asp-route-sort="NazivSilazno">
-                        Naziv silazno
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="dropdown">
-            <button class="sakura-btn-dark dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    style="padding-left:50px;padding-right:50px;">
-                Filtriraj
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li>
-                    <a class="dropdown-item"
-                       asp-controller="Proizvodi"
-                       asp-action="Index"
-                       asp-route-kategorija="Sve">
-                        Prikaži sve
-                    </a>
-                </li>
-            @foreach (var item in Html.GetEnumSelectList<KategorijaProizvoda>())
-            {
-                <li>
-                    <a class="dropdown-item"
-                       asp-controller="Proizvodi"
-                       asp-action="Index"
-                       asp-route-kategorija="@item.Value">
-                        @item.Text
-                    </a>
-                </li>
-            }
-            </ul>
-        </div>
-        </div>-->
-    <!--<div class="dropdown ">
-        <button class="sakura-btn-dark dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                    style="padding-left:50px;padding-right:50px;">
-            Sortiraj
-        </button>
-
-            <ul class="dropdown-menu dropdown-menu-end sort-filter-dropdown">
-            <li><a class="dropdown-item sort-option" data-sort="CijenaUzlazno" href="#">Cijena uzlazno</a></li>
-            <li><a class="dropdown-item sort-option" data-sort="CijenaSilazno" href="#">Cijena silazno</a></li>
-            <li><a class="dropdown-item sort-option" data-sort="NazivUzlazno" href="#">Naziv uzlazno</a></li>
-            <li><a class="dropdown-item sort-option" data-sort="NazivSilazno" href="#">Naziv silazno</a></li>
-        </ul>
-    </div>
-        <div class="dropdown dropdown-menu-end sort-filter-dropdown">
-        <button class="sakura-btn-dimmed dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                    style="padding-left:50px;padding-right:50px;">
-            Filtriraj
-        </button>
-
-        <ul class="dropdown-menu dropdown-menu-end">
-            @foreach (var item in Html.GetEnumSelectList<KategorijaProizvoda>())
-            {
-                <li>
-                    <a class="dropdown-item filter-option"
-                       data-filter="@item.Value"
-                       href="#">
-                        @item.Text
-                    </a>
-                </li>
-            }
-        </ul>
-    </div>
-    </div>
-
-    <form id="filterForm" asp-controller="Proizvodi" asp-action="Filtriraj" method="post">
-        <input type="hidden" id="filterValue" name="vrsta" />
-    </form>
-
-    <form id="sortForm" asp-controller="Proizvodi" asp-action="Sort" method="post">
-        <input type="hidden" id="sortValue" name="sortiranje" />
-    </form>-->
     <div class="proizvodi-container mx-auto row scroll-container-proizvodi">
 @foreach (var item in Model) {
     var naslov = item.naziv;
-    //if(naslov.Length>25) naslov=naslov.Substring(0,25)+"...";
             <div class="col-sm-3 p-2">
                 <div class="proizvod-card-proizvodi d-flex flex-column align-items-center">
 
@@ -284,26 +151,6 @@
                 </div>
             </div>
 }
-        <!--<div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
-            <div>
-                <img src="img/product-image-2.jpg">
-                <p class="wittgenstein">Densifique Fondant Densité Rege...</p>
-            </div>
-            <div class="volumen-cijena">
-                <span>200ml</span>
-                <span>110 KM</span>
-            </div>
-        </div>
-        <div class="col-sm proizvod-min-container d-flex flex-column align-items-center">
-            <div>
-                <img src="img/product-image-3.jpg">
-                <p class="wittgenstein">Densifique Densimorphose® Pjena</p>
-            </div>
-            <div class="volumen-cijena">
-                <span>150ml</span>
-                <span>50 KM</span>
-            </div>
-        </div>-->
     </div>
 </div>
 }

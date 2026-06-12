@@ -101,6 +101,18 @@ namespace SakuraWeb.Data
                 new Benefit { id =6, URLSlike = "dubinsko_ciscenje.svg", opis = "Dubinsko čišćenje" }
                 );
 
+            modelBuilder.Entity<Rezervacija>()
+                .HasOne(r => r.klijent)
+                .WithMany()
+                .HasForeignKey(r => r.klijentId)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<Rezervacija>()
+                .HasOne(r => r.frizer)
+                .WithMany()
+                .HasForeignKey(r => r.frizerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
