@@ -484,5 +484,8 @@ $RECYCLE.BIN/
 # Env variables
 env.ps1
 
+# Production secrets (uploaded to host directly, never committed)
+appsettings.Production.json
+
 .vscode
 .claude
