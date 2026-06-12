@@ -15,6 +15,7 @@ namespace SakuraWeb.Models
         [Required]
         public string sadrzaj { get; set; }
 
+        public ICollection<Odgovor> odgovori { get; set; } = new List<Odgovor>();
         public Pitanje()
         {
             sadrzaj = string.Empty;

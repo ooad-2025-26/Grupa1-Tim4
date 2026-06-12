@@ -21,8 +21,9 @@ namespace SakuraWeb.Models
         }
 
 
+      
         [ForeignKey("Korisnik")]
-        public string korisnikId { get; set; }
-        public Korisnik korisnik { get; set; }
+        public string? korisnikId { get; set; }
+        public Korisnik? korisnik { get; set; }
     }
 }
