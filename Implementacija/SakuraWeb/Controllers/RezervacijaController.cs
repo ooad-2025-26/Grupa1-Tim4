@@ -22,7 +22,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija
-        [Authorize(Roles = "Administrator, Korisnik, Zaposlenik")]
+        [Authorize(Roles = "Administrator, Klijent, Zaposlenik")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.rezervacije.Include(r => r.korisnik).Include(r => r.usluga);
@@ -30,7 +30,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Details/5
-        [Authorize(Roles = "Administrator, Korisnik, Zaposlenik")]
+        [Authorize(Roles = "Administrator, Klijent, Zaposlenik")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -51,7 +51,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Create
-        [Authorize(Roles = "Korisnik")]
+        [Authorize(Roles = "Klijent")]
         public async Task<IActionResult> Create()
         {
             var usluge = await _context.usluge
@@ -66,7 +66,7 @@ namespace SakuraWeb.Controllers
         // POST: Rezervacija/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Korisnik")]
+        [Authorize(Roles = "Klijent")]
         public async Task<IActionResult> Create(DateTime datumRezervacije, TimeSpan pocetnoVrijeme, int uslugaId)
         {
             var usluga = await _context.usluge.FindAsync(uslugaId);
@@ -120,7 +120,6 @@ namespace SakuraWeb.Controllers
             }
 
             var korisnikId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             var rezervacija = new Rezervacija
             {
                 datumRezervacije = datumRezervacije.Date,
@@ -131,12 +130,15 @@ namespace SakuraWeb.Controllers
                 uslugaId = uslugaId
             };
 
+            _context.Entry(rezervacija).Property(r => r.id).IsTemporary = true;
+
             _context.Add(rezervacija);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<IActionResult> VratiCreateView()
+    
         {
             var usluge = await _context.usluge
                 .OrderBy(u => u.kategorija)
@@ -148,7 +150,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Edit/5
-        [Authorize(Roles = "Administrator, Korisnik")]
+        [Authorize(Roles = "Administrator, Klijent")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -204,7 +206,7 @@ namespace SakuraWeb.Controllers
         }
 
         // GET: Rezervacija/Delete/5
-        [Authorize(Roles = "Administrator, Korisnik")]
+        [Authorize(Roles = "Administrator, Klijent")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
