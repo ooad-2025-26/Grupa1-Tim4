@@ -19,10 +19,16 @@ namespace SakuraWeb.Controllers
             _context = context;
         }
 
+        
         // GET: Anketa
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var pitanja = await _context.pitanja
+                .Include(p => p.odgovori)
+                .OrderBy(p => p.id)
+                .ToListAsync();
+
+            return View(pitanja);
         }
 
         // GET: Anketa/Details/5
@@ -158,6 +164,55 @@ namespace SakuraWeb.Controllers
         private bool AnketaExists(int id)
         {
             return _context.ankete.Any(e => e.id == id);
+        }
+
+        // GET: Anketa/Popuni - prikazuje anketu sa pitanjima iz baze
+        public async Task<IActionResult> Popuni()
+        {
+            var pitanja = await _context.pitanja
+                .Include(p => p.odgovori)
+                .OrderBy(p => p.id)
+                .ToListAsync();
+
+            return View(pitanja);
+        }
+
+        // POST: Anketa/Preporuka - racuna preporuku na osnovu odabranih odgovora
+        [HttpPost]
+        // POST: Anketa/Preporuka
+        [HttpPost]
+        public async Task<IActionResult> Preporuka([FromBody] List<int> odgovorIds)
+        {
+            int ukupnoBodova = await _context.odgovori
+                .Where(o => odgovorIds.Contains(o.id))
+                .SumAsync(o => o.poeni);
+
+            var proizvodi = await _context.proizvodi.ToListAsync();
+
+            Proizvod? NajbliziProfilu(KategorijaProizvoda kategorija)
+            {
+                return proizvodi
+                    .Where(p => p.kategorija == kategorija)
+                    .OrderBy(p => Math.Abs(p.poeniPr - ukupnoBodova))
+                    .FirstOrDefault();
+            }
+
+            var sampon = NajbliziProfilu(KategorijaProizvoda.Šampon);
+            var regenerator = NajbliziProfilu(KategorijaProizvoda.Regenerator);
+
+            var maskaUlje = proizvodi
+                .Where(p => p.kategorija == KategorijaProizvoda.Maska || p.kategorija == KategorijaProizvoda.Ulje)
+                .OrderBy(p => Math.Abs(p.poeniPr - ukupnoBodova))
+                .FirstOrDefault();
+
+            var preporuke = new List<object?>
+    {
+        sampon == null ? null : new { id = sampon.id, naziv = sampon.naziv, slika = sampon.slikaPutanja },
+        regenerator == null ? null : new { id = regenerator.id, naziv = regenerator.naziv, slika = regenerator.slikaPutanja },
+        maskaUlje == null ? null : new { id = maskaUlje.id, naziv = maskaUlje.naziv, slika = maskaUlje.slikaPutanja }
+    }.Where(p => p != null);
+
+            return Json(preporuke);
         }
     }
 }

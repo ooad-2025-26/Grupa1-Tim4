@@ -57,7 +57,7 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja")] Proizvod proizvod, IFormFile? slika)
+        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja,poeniPr")] Proizvod proizvod, IFormFile? slika)
         {
             /*Console.WriteLine("#Model IN");
             foreach (var kvp in ModelState)
@@ -119,7 +119,7 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,naziv,cijena,kategorija,volumen")] Proizvod proizvod)
+        public async Task<IActionResult> Edit(int id, [Bind("id,naziv,cijena,kategorija,volumen,poeniPr")] Proizvod proizvod)
         {
             if (id != proizvod.id)
             {
