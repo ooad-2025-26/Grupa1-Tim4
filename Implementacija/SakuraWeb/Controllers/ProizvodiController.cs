@@ -65,7 +65,7 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja")] Proizvod proizvod, IFormFile? slika)
+        public async Task<IActionResult> Create([Bind("id,naziv,cijena,kategorija,volumen,slikaPutanja,poeniPr")] Proizvod proizvod, IFormFile? slika)
         {
             /*Console.WriteLine("#Model IN");
             foreach (var kvp in ModelState)
@@ -127,7 +127,7 @@ namespace SakuraWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,naziv,cijena,kategorija,volumen")] Proizvod proizvod)
+        public async Task<IActionResult> Edit(int id, [Bind("id,naziv,cijena,kategorija,volumen,poeniPr")] Proizvod proizvod, IFormFile? slika)
         {
             if (id != proizvod.id)
             {
@@ -138,7 +138,35 @@ namespace SakuraWeb.Controllers
             {
                 try
                 {
-                    _context.Update(proizvod);
+                    var postojeci = await _context.proizvodi.FindAsync(id);
+                    if (postojeci == null)
+                    {
+                        return NotFound();
+                    }
+
+                    postojeci.naziv = proizvod.naziv;
+                    postojeci.cijena = proizvod.cijena;
+                    postojeci.kategorija = proizvod.kategorija;
+                    postojeci.volumen = proizvod.volumen;
+                    postojeci.poeniPr = proizvod.poeniPr;
+
+                    if (slika != null && slika.Length > 0)
+                    {
+                        string uploadsFolder = Path.Combine(_environment.WebRootPath, "img");
+                        Directory.CreateDirectory(uploadsFolder);
+
+                        string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(slika.FileName);
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await slika.CopyToAsync(stream);
+                        }
+
+                        postojeci.slikaPutanja = uniqueFileName;
+                    }
+                    // ako nema nove slike, postojeci.slikaPutanja ostaje nepromijenjen
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

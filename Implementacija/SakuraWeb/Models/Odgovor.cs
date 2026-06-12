@@ -14,9 +14,10 @@ namespace SakuraWeb.Models
 
         [Required]
         public string sadrzaj { get; set; }
-        
+
+        [Range(0, 3, ErrorMessage = "Bodovi odgovora moraju biti između 0 i 3!")]
         public int poeni { get; set; }
-        
+
         public Odgovor()
         {
             sadrzaj = string.Empty;

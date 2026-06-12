@@ -27,6 +27,10 @@ namespace SakuraWeb.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
+
+
+
             modelBuilder.Entity<Models.Anketa>().ToTable("Ankete");
             modelBuilder.Entity<Models.Benefit>().ToTable("Benefiti");
             modelBuilder.Entity<Models.Korisnik>().ToTable("Korisnici");
@@ -48,6 +52,39 @@ namespace SakuraWeb.Data
             modelBuilder.Entity<Models.Rezervacija>().ToTable("Rezervacije");
             modelBuilder.Entity<Models.Sastojak>().ToTable("Sastojci");
             modelBuilder.Entity<Models.Usluga>().ToTable("Usluge");
+
+
+            // --- Pitanja ---
+            modelBuilder.Entity<Pitanje>().HasData(
+                new Pitanje { id = 1, sadrzaj = "Ključni problem tjemena?" },
+                new Pitanje { id = 2, sadrzaj = "Ključni problem vrhova kose?" },
+                new Pitanje { id = 3, sadrzaj = "Na koji način stilizujete?" },
+                new Pitanje { id = 4, sadrzaj = "Koliko često koristiš proizvode za njegu?" }
+            );
+
+            // --- Odgovori ---
+            modelBuilder.Entity<Odgovor>().HasData(
+                // Pitanje 1 - tjeme
+                new Odgovor { id = 1, pitanjeId = 1, sadrzaj = "masno", poeni = 0 },
+                new Odgovor { id = 2, pitanjeId = 1, sadrzaj = "normalno", poeni = 1 },
+                new Odgovor { id = 3, pitanjeId = 1, sadrzaj = "suho", poeni = 3 },
+
+                // Pitanje 2 - vrhovi
+                new Odgovor { id = 4, pitanjeId = 2, sadrzaj = "masna", poeni = 0 },
+                new Odgovor { id = 5, pitanjeId = 2, sadrzaj = "oštećena", poeni = 2 },
+                new Odgovor { id = 6, pitanjeId = 2, sadrzaj = "suha", poeni = 3 },
+
+                // Pitanje 3 - stilizovanje
+                new Odgovor { id = 7, pitanjeId = 3, sadrzaj = "sušenje", poeni = 1 },
+                new Odgovor { id = 8, pitanjeId = 3, sadrzaj = "feniranje", poeni = 2 },
+                new Odgovor { id = 9, pitanjeId = 3, sadrzaj = "pegla/figaro", poeni = 3 },
+
+                // Pitanje 4 - učestalost njege
+                new Odgovor { id = 10, pitanjeId = 4, sadrzaj = "ponekad", poeni = 1 },
+                new Odgovor { id = 11, pitanjeId = 4, sadrzaj = "sedmično", poeni = 2 },
+                new Odgovor { id = 12, pitanjeId = 4, sadrzaj = "svaki dan", poeni = 3 }
+            );
+
         }
     }
 }

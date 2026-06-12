@@ -1,4 +1,4 @@
-@model IEnumerable<SakuraWeb.Models.Anketa>
+@model List<SakuraWeb.Models.Pitanje>
 
 @{
     ViewData["Title"] = "Anketa";
@@ -7,97 +7,45 @@
 <section class="anketa-page">
     <section class="anketa-hero anketa-view is-active" aria-labelledby="anketa-title" data-anketa-view="start">
         <div class="anketa-hero__content">
-           
             <h1 id="anketa-title" class="stack-sans-headline-h1">Tvoja savršena rutina</h1>
             <p class="anketa-lead">Odgovori na nekoliko pitanja i pronađi proizvode koji najbolje odgovaraju tvojoj kosi.</p>
             <button type="button" class="btn sakura-btn-dark anketa-primary-btn" data-anketa-next>Start</button>
         </div>
-
     </section>
 
-    <section class="anketa-question-section anketa-view" aria-labelledby="anketa-question-title-1" data-anketa-view="question">
-        <div class="anketa-question-card">
-            <span class="redni-broj-pitanja">1</span>
-            <p class="anketa-eyebrow">Pitanje 1 od 3</p>
-            <h2 id="anketa-question-title-1" class="stack-sans-headline-h2">Koji je oblik tvoje kose?</h2>
+    @{
+        int brojPitanja = Model.Count;
+    }
+    @for (int i = 0; i < brojPitanja; i++)
+    {
+        var pitanje = Model[i];
+        bool zadnje = (i == brojPitanja - 1);
 
-            <fieldset class="anketa-options radio-options" aria-label="Oblik kose">
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="kovrđava" name="oblikKose" id="kovrđava">
-                    <label for="kovrđava">Kovrđava</label>
-                </div>
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="valovita" name="oblikKose" id="valovita">
-                    <label for="valovita">Valovita</label>
-                </div>
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="ravna" name="oblikKose" id="ravna">
-                    <label for="ravna">Ravna</label>
-                </div>
-            </fieldset>
+        <section class="anketa-question-section anketa-view" aria-labelledby="anketa-question-title-@pitanje.id" data-anketa-view="question">
+            <div class="anketa-question-card">
+                <span class="redni-broj-pitanja">@(i + 1)</span>
+                <p class="anketa-eyebrow">Pitanje @(i + 1) od @brojPitanja</p>
+                <h2 id="anketa-question-title-@pitanje.id" class="stack-sans-headline-h2">@pitanje.sadrzaj</h2>
 
-            <div class="anketa-question-actions">
-                <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
-                <button type="button" class="btn anketa-next-btn" data-anketa-next disabled>Sljedeće</button>
+                <fieldset class="anketa-options radio-options" aria-label="@pitanje.sadrzaj">
+                    @foreach (var odgovor in pitanje.odgovori)
+                    {
+                        <div class="radio-option radio-option-anketa">
+                            <input type="radio" value="@odgovor.id" name="pitanje-@pitanje.id" id="odgovor-@odgovor.id" data-poeni="@odgovor.poeni">
+                            <label for="odgovor-@odgovor.id">@odgovor.sadrzaj</label>
+                        </div>
+                    }
+                </fieldset>
+
+                <div class="anketa-question-actions">
+                    <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
+                    <button type="button" class="btn anketa-next-btn" data-anketa-next disabled>
+                        @(zadnje ? "Prikaži preporuku" : "Sljedeće")
+                    </button>
+                </div>
             </div>
-        </div>
-    </section>
-
-    <section class="anketa-question-section anketa-view" aria-labelledby="anketa-question-title-2" data-anketa-view="question">
-        <div class="anketa-question-card">
-            <span class="redni-broj-pitanja">2</span>
-            <p class="anketa-eyebrow">Pitanje 2 od 3</p>
-            <h2 id="anketa-question-title-2" class="stack-sans-headline-h2">Najveći problem?</h2>
-
-            <fieldset class="anketa-options radio-options" aria-label="problem">
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="masna kosa" name="problem" id="masna kosa">
-                    <label for="masna kosa">Masna kosa</label>
-                </div>
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="suha kosa" name="problem" id="suha kosa">
-                    <label for="suha kosa">Suha kosa</label>
-                </div>
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="ostećena" name="problem" id="oštećena">
-                    <label for="oštećena">Oštećena kosa</label>
-                </div>
-            </fieldset>
-
-            <div class="anketa-question-actions">
-                <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
-                <button type="button" class="btn anketa-next-btn" data-anketa-next disabled>Sljedeće</button>
-            </div>
-        </div>
-    </section>
-
-    <section class="anketa-question-section anketa-view" aria-labelledby="anketa-question-title-3" data-anketa-view="question">
-        <div class="anketa-question-card">
-            <span class="redni-broj-pitanja">3</span>
-            <p class="anketa-eyebrow">Pitanje 3 od 3</p>
-            <h2 id="anketa-question-title-3" class="stack-sans-headline-h2">Koliko često koristis proizvode za njegu?</h2>
-
-            <fieldset class="anketa-options radio-options" aria-label="Ucestalost njege">
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="svaki-dan" name="ucestalostNjege" id="svaki-dan">
-                    <label for="svaki-dan">Svaki dan</label>
-                </div>
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="sedmicno" name="ucestalostNjege" id="sedmicno">
-                    <label for="sedmicno">Sedmično</label>
-                </div>
-                <div class="radio-option radio-option-anketa">
-                    <input type="radio" value="ponekad" name="ucestalostNjege" id="ponekad">
-                    <label for="ponekad">Ponekad</label>
-                </div>
-            </fieldset>
-
-            <div class="anketa-question-actions">
-                <button type="button" class="btn anketa-back-btn" data-anketa-back>Nazad</button>
-                <button type="button" class="btn anketa-next-btn" data-anketa-next disabled>Prikaži preporuku</button>
-            </div>
-        </div>
-    </section>
+        </section>
+    }
 
     <section class="anketa-result-section anketa-view" aria-labelledby="anketa-result-title" data-anketa-view="result">
         <div class="anketa-result-heading">
@@ -105,22 +53,8 @@
             <h2 id="anketa-result-title" class="stack-sans-headline-h1">Tvoja rutina je spremna!</h2>
         </div>
 
-        <div class="anketa-rutina">
-            <article class="anketa-product-card">
-                <span class="anketa-step">1</span>
-                <img src="~/img/image 50.png" alt="Genesis Bain Hydra-Fortifiant Shampoo">
-                <p>Genesis Bain Hydra-Fortifiant Shampoo</p>
-            </article>
-            <article class="anketa-product-card">
-                <span class="anketa-step">2</span>
-                <img src="~/img/image 51.png" alt="Genesis Fondant Renforcateur">
-                <p>Genesis Fondant Renforcateur</p>
-            </article>
-            <article class="anketa-product-card">
-                <span class="anketa-step">3</span>
-                <img src="~/img/image 52.png" alt="Genesis serum za kosu">
-                <p>Genesis Bain Hydra-Fortifiant Serum</p>
-            </article>
+        <div class="anketa-rutina" id="anketa-rutina-container">
+            <p>Učitavanje preporuke...</p>
         </div>
 
         <div class="anketa-result-actions">
@@ -164,13 +98,69 @@
                 updateQuestionButton(view);
             });
 
+            // Prikupi sve odabrane odgovorId-eve i posalji na server
+            const ucitajPreporuku = async () => {
+                const odgovorIds = [];
+                document.querySelectorAll(".anketa-question-section input[type='radio']:checked").forEach((input) => {
+                    odgovorIds.push(parseInt(input.value, 10));
+                });
+
+                const container = document.getElementById("anketa-rutina-container");
+                container.innerHTML = "<p>Učitavanje preporuke...</p>";
+
+                try {
+                    const response = await fetch("/Anketa/Preporuka", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(odgovorIds)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Greška u odgovoru servera");
+                    }
+
+                    const preporuke = await response.json();
+
+                    if (!preporuke || preporuke.length === 0) {
+                        container.innerHTML = "<p>Nismo pronašli preporuku. Pokušajte ponovo.</p>";
+                        return;
+                    }
+
+                    container.innerHTML = "";
+                    preporuke.forEach((proizvod, index) => {
+                        const slikaSrc = proizvod.slika
+                            ? `/img/${proizvod.slika}`
+                            : "/img/placeholder.png";
+
+                        const article = document.createElement("article");
+                        article.className = "anketa-product-card";
+                        article.innerHTML = `
+                                    <span class="anketa-step">${index + 1}</span>
+                                    <img src="${slikaSrc}" alt="${proizvod.naziv}">
+                                    <p>${proizvod.naziv}</p>
+                                `;
+                        container.appendChild(article);
+                    });
+                } catch (err) {
+                    console.error(err);
+                    container.innerHTML = "<p>Došlo je do greške prilikom učitavanja preporuke.</p>";
+                }
+            };
+
             document.querySelectorAll("[data-anketa-next]").forEach((button) => {
                 button.addEventListener("click", () => {
                     const activeView = views[currentIndex];
                     if (activeView.dataset.anketaView === "question" && !activeView.querySelector("input[type='radio']:checked")) {
                         return;
                     }
-                    showView(Math.min(currentIndex + 1, views.length - 1));
+
+                    const nextIndex = Math.min(currentIndex + 1, views.length - 1);
+                    showView(nextIndex);
+
+                    // Ako smo upravo prešli na rezultat, pozovi preporuku
+                    if (views[nextIndex].dataset.anketaView === "result") {
+                        ucitajPreporuku();
+                    }
                 });
             });
 
