@@ -28,9 +28,14 @@ namespace SakuraWeb.Controllers
             return View(await _context.proizvodi.ToListAsync());
         }*/
 
-        public async Task<IActionResult> Index(string? sort)
+        public async Task<IActionResult> Index(string? sort, KategorijaProizvoda? kategorija)
         {
             IQueryable<Proizvod> query = _context.proizvodi;
+
+            if (kategorija.HasValue && !kategorija.Equals("Sve"))
+            { 
+                query = query.Where(p => p.kategorija == kategorija);
+            }
 
             switch (sort)
             {
