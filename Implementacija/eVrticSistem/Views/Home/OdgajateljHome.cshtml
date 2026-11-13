@@ -1,0 +1,456 @@
+@model EVrtic.Controllers.OdgajateljHomeViewModel
+
+@{
+    ViewData["Title"] = "Odgajatelj početna";
+}
+
+<div class="educator-page">
+    <div class="educator-card">
+
+        <aside class="educator-sidebar">
+            <h1 class="educator-logo">eVrtić</h1>
+
+            <nav class="educator-menu">
+    <a class="educator-link active" asp-controller="Home" asp-action="OdgajateljHome">
+        <span>🏠</span>
+        Početna
+    </a>
+
+    <a class="educator-link" asp-controller="DnevniIzvjestaj" asp-action="EvidencijaAktivnosti">
+        <span>📝</span>
+        Aktivnosti
+    </a>
+
+    <a class="educator-link" asp-controller="EvidencijaDolaskaOdlaska" asp-action="OdgajateljPregled">
+        <span>☑️</span>
+        Dolazak/Odlazak
+    </a>
+
+    <a class="educator-link" asp-controller="Obavijest" asp-action="OdgajateljObavijesti">
+        <span>🔔</span>
+        Obavijesti
+    </a>
+
+    <a class="educator-link" asp-controller="SazetakAktivnosti" asp-action="OdgajateljPregled">
+        <span>📊</span>
+        Sažeci
+    </a>
+
+    <a class="educator-link" asp-controller="Korisnik" asp-action="Profil">
+        <span>👤</span>
+        Profil
+    </a>
+
+ 
+</nav>
+
+            <div class="educator-side-art">
+                <div class="side-cloud side-cloud-1"></div>
+                <div class="side-cloud side-cloud-2"></div>
+                <div class="side-kindergarten">
+                    <div class="side-roof"></div>
+                    <div class="side-building">
+                        <div class="side-window"></div>
+                        <div class="side-door"></div>
+                        <div class="side-window"></div>
+                    </div>
+                </div>
+                <div class="side-tree side-tree-left"></div>
+                <div class="side-tree side-tree-right"></div>
+            </div>
+        </aside>
+
+        <main class="educator-main">
+            <div class="educator-top">
+                <div>
+                    <h2>Pozdrav,</h2>
+                    <h1>@Model.Ime! <span>☀️</span></h1>
+                </div>
+
+                <a class="educator-bell" asp-controller="Obavijest" asp-action="OdgajateljObavijesti">
+                    🔔
+                </a>
+            </div>
+
+            <section class="educator-hero">
+                @if (!Model.Grupe.Any())
+                {
+                    <div class="group-card">
+                        <h3>Moja grupa</h3>
+                        <div class="group-info">
+                            <div class="group-avatar">🦋</div>
+                            <div>
+                                <h4>Niste dodjeljeni grupi</h4>
+                                <p>Kontaktirajte administratora</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (Model.Grupe.Count == 1)
+                {
+                    var grupa = Model.Grupe.First();
+                    <a class="group-card group-card-link" asp-controller="Grupa" asp-action="MojaGrupa">
+                        <h3>Moja grupa</h3>
+                        <div class="group-info">
+                            <div class="group-avatar">🦋</div>
+                            <div>
+                                <h4>@grupa.ImeGrupe</h4>
+                                <p>@grupa.Djeca.Count(d => d.Aktivno) djece</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+                else
+                {
+                    <div class="group-card">
+                        <h3>Moje grupe</h3>
+                        @foreach (var grupa in Model.Grupe)
+                        {
+                            <a class="group-info group-info-link" asp-controller="Grupa" asp-action="MojaGrupa">
+                                <div class="group-avatar">🦋</div>
+                                <div>
+                                    <h4>@grupa.ImeGrupe</h4>
+                                    <p>@grupa.Djeca.Count(d => d.Aktivno) djece</p>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+
+                <div class="teacher-illustration">
+                    <div class="teacher-cloud teacher-cloud-1"></div>
+                    <div class="teacher-cloud teacher-cloud-2"></div>
+                    <div class="teacher-scene">
+                        <div class="cartoon-child child-one">
+                            <div class="child-head"></div>
+                            <div class="child-body"></div>
+                        </div>
+                        <div class="cartoon-teacher">
+                            <div class="teacher-head"></div>
+                            <div class="teacher-body"></div>
+                        </div>
+                        <div class="cartoon-child child-two">
+                            <div class="child-head"></div>
+                            <div class="child-body"></div>
+                        </div>
+                        <div class="cartoon-child child-three">
+                            <div class="child-head"></div>
+                            <div class="child-body"></div>
+                        </div>
+                    </div>
+                    <div class="teacher-ground"></div>
+                </div>
+            </section>
+
+            <h3 class="educator-section-title">Brzi pristup</h3>
+
+            <section class="educator-grid">
+                <a class="educator-quick-card" asp-controller="DnevniIzvjestaj" asp-action="EvidencijaAktivnosti">
+                    <div class="educator-quick-icon purple">📝</div>
+                    <h4>Evidencija aktivnosti</h4>
+                    <span>→</span>
+                </a>
+
+<a class="educator-quick-card" asp-controller="EvidencijaDolaskaOdlaska" asp-action="OdgajateljPregled">
+                    <div class="educator-quick-icon blue">☑️</div>
+                    <h4>Dolazak/Odlazak</h4>
+                    <span>→</span>
+                </a>
+
+                <a class="educator-quick-card" asp-controller="Obavijest" asp-action="OdgajateljObavijesti">
+                    <div class="educator-quick-icon pink">🔔</div>
+                    <h4>Obavijesti</h4>
+                    <span>→</span>
+                </a>
+
+<a class="educator-quick-card" asp-controller="SazetakAktivnosti" asp-action="OdgajateljPregled">
+                    <div class="educator-quick-icon purple">📊</div>
+                    <h4>Sažeci</h4>
+                    <span>→</span>
+                </a>
+            </section>
+        </main>
+
+
+
+    </div>
+</div>
+
+
+<style>
+    /* === ODGAJATELJ UI STANDARDIZACIJA === */
+    body {
+        background: #eef3ff !important;
+    }
+
+    .group-card-link,
+    .group-info-link {
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .group-card-link {
+        display: block;
+    }
+
+    .group-info-link {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        border-radius: 12px;
+        padding: 8px 0;
+    }
+
+    .group-card-link:hover,
+    .group-info-link:hover {
+        color: inherit;
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    .educator-page,
+    .educator-attendance-page,
+    .educator-summary-page {
+        min-height: 100vh;
+        padding: 22px 0;
+        font-family: Arial, sans-serif;
+        color: #071733;
+    }
+
+    .educator-card,
+    .educator-attendance-card,
+    .educator-summary-card {
+        width: 100%;
+        max-width: 1250px;
+        min-height: 760px;
+        margin: 0 auto;
+        background: #fbfaff;
+        border-radius: 22px;
+        box-shadow: 0 8px 26px rgba(15, 23, 42, 0.08);
+        display: grid;
+        grid-template-columns: 235px 1fr;
+        overflow: hidden;
+    }
+
+    .educator-sidebar {
+        background: #ffffff;
+        border-right: 1px solid #e5e7eb;
+        padding: 28px 22px 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+    }
+
+    .educator-logo {
+        margin: 0 0 34px;
+        color: #6d42db;
+        font-size: 2.7rem;
+        line-height: 1;
+        font-weight: 900;
+        text-align: center;
+    }
+
+    .educator-menu {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .educator-link {
+        min-height: 54px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 18px;
+        border-radius: 12px;
+        color: #071733;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 800;
+        box-sizing: border-box;
+    }
+
+    .educator-link:hover {
+        color: #6d42db;
+        background: #f3efff;
+        text-decoration: none;
+    }
+
+    .educator-link span {
+        width: 24px;
+        text-align: center;
+        font-size: 1.25rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .educator-link.active {
+        color: #7447d8;
+        background: #ece6ff;
+    }
+
+
+    .educator-side-art {
+        margin-top: auto;
+        position: relative;
+        height: 210px;
+        flex-shrink: 0;
+        overflow: hidden;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .side-cloud {
+        position: absolute;
+        background: #dbeafe;
+        border-radius: 999px;
+    }
+
+    .side-cloud::before,
+    .side-cloud::after {
+        content: "";
+        position: absolute;
+        background: #dbeafe;
+        border-radius: 50%;
+    }
+
+    .side-cloud-1 {
+        width: 56px;
+        height: 18px;
+        left: 42px;
+        top: 18px;
+    }
+
+    .side-cloud-1::before { width: 22px; height: 22px; left: 8px; top: -10px; }
+    .side-cloud-1::after { width: 26px; height: 26px; left: 26px; top: -13px; }
+
+    .side-cloud-2 {
+        width: 64px;
+        height: 20px;
+        right: 38px;
+        top: 4px;
+    }
+
+    .side-cloud-2::before { width: 24px; height: 24px; left: 9px; top: -11px; }
+    .side-cloud-2::after { width: 28px; height: 28px; left: 30px; top: -14px; }
+
+    .side-kindergarten {
+        position: absolute;
+        left: 50%;
+        bottom: 28px;
+        width: 120px;
+        height: 105px;
+        transform: translateX(-50%);
+        z-index: 4;
+    }
+
+    .side-roof {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        width: 104px;
+        height: 44px;
+        transform: translateX(-50%);
+        background: #6d42db;
+        clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        z-index: 5;
+    }
+
+    .side-building {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 104px;
+        height: 62px;
+        transform: translateX(-50%);
+        background: #ffd35c;
+        border-radius: 7px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 12px;
+        padding-bottom: 12px;
+        box-sizing: border-box;
+        z-index: 4;
+    }
+
+    .side-window {
+        width: 16px;
+        height: 24px;
+        background: #55bce8;
+        border-radius: 5px;
+    }
+
+    .side-door {
+        width: 22px;
+        height: 34px;
+        background: #2bb3a3;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .side-tree {
+        position: absolute;
+        bottom: 42px;
+        width: 38px;
+        height: 84px;
+        background: #7ed832;
+        border-radius: 22px;
+        z-index: 3;
+    }
+
+    .side-tree::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -42px;
+        width: 4px;
+        height: 58px;
+        transform: translateX(-50%);
+        background: #9c5c2f;
+        border-radius: 3px;
+    }
+
+    .side-tree-left { left: 32px; }
+    .side-tree-right { right: 32px; }
+
+    .educator-main,
+    .attendance-main,
+    .summary-main {
+        grid-column: 2;
+        padding: 34px 48px 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .educator-main-scroll {
+        overflow-y: auto;
+    }
+
+
+    @@media (max-width: 1000px) {
+        .educator-card,
+        .educator-attendance-card,
+        .educator-summary-card {
+            grid-template-columns: 1fr;
+            border-radius: 0;
+        }
+
+        .educator-sidebar {
+            display: none;
+        }
+
+        .educator-main,
+        .attendance-main,
+        .summary-main,
+        {
+            grid-column: 1;
+        }
+    }
+</style>
+

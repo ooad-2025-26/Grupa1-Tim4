@@ -1,0 +1,501 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using EVrtic.Data;
+using EVrtic.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
+namespace EVrtic.Controllers
+{
+    public class DijeteController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<Korisnik> _userManager;
+
+        public DijeteController(ApplicationDbContext context, UserManager<Korisnik> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        // GET: Dijete (admin)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Index()
+        {
+            var applicationDbContext = _context.Djeca.Include(d => d.Grupa).Include(d => d.Roditelj);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Dijete/Details/5 (admin)
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+            var dijete = await _context.Djeca
+                .Include(d => d.Grupa).Include(d => d.Roditelj)
+                .Include(d => d.Alergije).Include(d => d.Bolesti)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (dijete == null) return NotFound();
+            ViewBag.SveGrupe = await _context.Grupe.OrderBy(g => g.ImeGrupe).ToListAsync();
+            return View(dijete);
+        }
+
+        // ─── ADMINISTRATOR: Deaktivacija / aktivacija profila djeteta ────────
+        // (scenarij 6.6 - administrator deaktivira profil djeteta)
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Deaktiviraj(int id)
+        {
+            var dijete = await _context.Djeca.FindAsync(id);
+            if (dijete == null) return NotFound();
+
+            dijete.Aktivno = false;
+            await _context.SaveChangesAsync();
+
+            TempData["Uspjeh"] = $"Profil djeteta \"{dijete.ImePrezime}\" je deaktiviran.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Aktiviraj(int id)
+        {
+            var dijete = await _context.Djeca.FindAsync(id);
+            if (dijete == null) return NotFound();
+
+            dijete.Aktivno = true;
+            await _context.SaveChangesAsync();
+
+            TempData["Uspjeh"] = $"Profil djeteta \"{dijete.ImePrezime}\" je ponovo aktiviran.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        // ─── ADMINISTRATOR: Promjena grupe djeteta (s Details ekrana) ──────
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> PromijeniGrupu(int id, int? grupaId)
+        {
+            var dijete = await _context.Djeca.FindAsync(id);
+            if (dijete == null) return NotFound();
+
+            // grupaId može biti null (= ukloni iz grupe)
+            dijete.GrupaId = grupaId;
+            await _context.SaveChangesAsync();
+
+            TempData["Uspjeh"] = grupaId.HasValue
+                ? "Grupa djeteta je uspješno ažurirana."
+                : "Dijete je uklonjeno iz grupe.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        // ─── ADMINISTRATOR: Trajno brisanje profila djeteta ─────────────────
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Obrisi(int id)
+        {
+            var dijete = await _context.Djeca
+                .Include(d => d.Alergije)
+                .Include(d => d.Bolesti)
+                .Include(d => d.DnevniIzvjestaji)
+                .Include(d => d.EvidencijeDolaskaOdlaska)
+                .Include(d => d.SazeciAktivnosti)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (dijete == null) return NotFound();
+
+            var ime = string.IsNullOrWhiteSpace(dijete.ImePrezime)
+                ? $"(kod: {dijete.IdentifikacioniKod})"
+                : dijete.ImePrezime;
+
+            // Eksplicitno ukloni povezane zapise (sigurnije od oslanjanja na cascade)
+            _context.AlergijeDjece.RemoveRange(dijete.Alergije);
+            _context.BolestiDjece.RemoveRange(dijete.Bolesti);
+            _context.DnevniIzvjestaji.RemoveRange(dijete.DnevniIzvjestaji);
+            _context.EvidencijeDolaskaOdlaska.RemoveRange(dijete.EvidencijeDolaskaOdlaska);
+            _context.SazeciAktivnosti.RemoveRange(dijete.SazeciAktivnosti);
+            _context.Djeca.Remove(dijete);
+            await _context.SaveChangesAsync();
+
+            TempData["Uspjeh"] = $"Profil djeteta \"{ime}\" je trajno obrisan iz sistema.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // ─── ADMINISTRATOR: Unos identifikacionog koda ───────────────────────
+
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public IActionResult DodajIdentifikacioniKod() => View();
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> DodajIdentifikacioniKod([Bind("IdentifikacioniKod")] Dijete dijete)
+        {
+            ModelState.Remove("ImePrezime");
+            ModelState.Remove("DodatnaNapomena");
+            ModelState.Remove("DatumRodjenja");
+
+            var kod = dijete.IdentifikacioniKod?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(kod))
+            {
+                ModelState.AddModelError("IdentifikacioniKod", "Identifikacioni kod je obavezan.");
+            }
+            else if (kod.Length != 8)
+            {
+                ModelState.AddModelError("IdentifikacioniKod", "Identifikacioni kod mora imati tačno 8 karaktera.");
+            }
+            else if (await _context.Djeca.AnyAsync(d =>
+                EF.Functions.Collate(d.IdentifikacioniKod, "Latin1_General_CS_AS") == kod))
+            {
+                ModelState.AddModelError("IdentifikacioniKod", "Dijete sa ovim identifikacionim kodom već postoji.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(dijete);
+            }
+
+            _context.Add(new Dijete
+            {
+                IdentifikacioniKod = kod,
+                ImePrezime = string.Empty,
+                Aktivno = true
+            });
+
+            await _context.SaveChangesAsync();
+
+            TempData["Uspjeh"] = $"Identifikacioni kod \"{kod}\" je uspješno dodan.";
+            return RedirectToAction(nameof(DodajIdentifikacioniKod));
+        }
+
+        private static bool ImePrezimeImaNajmanjeDvijeRijeciSaVelikimSlovom(string? imePrezime)
+        {
+            if (string.IsNullOrWhiteSpace(imePrezime))
+                return false;
+
+            var dijelovi = Regex.Split(imePrezime.Trim(), @"\s+");
+
+            return dijelovi.Length >= 2 &&
+                   dijelovi.All(dio => Regex.IsMatch(dio, @"^[A-ZČĆŽŠĐ][a-zčćžšđ]+$"));
+        }
+
+        private static bool DatumRodjenjaJeUDozvoljenomRasponu(DateTime datumRodjenja)
+        {
+            var danas = DateTime.Today;
+            var najmladjiDozvoljeniDatum = danas.AddMonths(-3);
+            var najstarijiDozvoljeniDatum = danas.AddYears(-7);
+
+            return datumRodjenja.Date <= najmladjiDozvoljeniDatum &&
+                   datumRodjenja.Date >= najstarijiDozvoljeniDatum;
+        }
+
+        private static bool SveStavkeImajuNajvise100Slova(IEnumerable<string>? stavke)
+        {
+            if (stavke == null)
+                return true;
+
+            return stavke
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .All(s => s.Trim().Length <= 100);
+        }
+
+        // ─── RODITELJ: Unos podataka o djetetu ──────────────────────────────
+
+        [Authorize(Roles = "RODITELJ")]
+        public async Task<IActionResult> UnosPodataka(int? id, bool novaRegistracija = false)
+        {
+            var korisnik = await _userManager.GetUserAsync(User);
+            if (korisnik == null) return Challenge();
+
+            Dijete? dijete;
+
+            if (id.HasValue)
+            {
+                dijete = await _context.Djeca.Include(d => d.Alergije).Include(d => d.Bolesti)
+                    .FirstOrDefaultAsync(d => d.Id == id && d.RoditeljId == korisnik.Id);
+                if (dijete == null) return Forbid();
+            }
+            else
+            {
+                dijete = await _context.Djeca.Include(d => d.Alergije).Include(d => d.Bolesti)
+                    .FirstOrDefaultAsync(d => d.RoditeljId == korisnik.Id && d.ImePrezime == string.Empty);
+                if (dijete == null)
+                    return RedirectToAction("RoditeljHome", "Home");
+            }
+
+            ViewData["NovaRegistracija"] = novaRegistracija;
+
+            var vm = new UnosPodatakaViewModel
+            {
+                DijeteId = dijete.Id,
+                ImePrezime = dijete.ImePrezime,
+                DatumRodjenja = dijete.DatumRodjenja == default ? DateTime.Today : dijete.DatumRodjenja,
+                DodatnaNapomena = dijete.DodatnaNapomena,
+                Alergije = dijete.Alergije.Select(a => a.Naziv).ToList(),
+                Bolesti = dijete.Bolesti.Select(b => b.Naziv).ToList()
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "RODITELJ")]
+        public async Task<IActionResult> UnosPodataka(UnosPodatakaViewModel vm, bool novaRegistracija = false)
+        {
+            var korisnik = await _userManager.GetUserAsync(User);
+            if (korisnik == null) return Challenge();
+
+            var dijete = await _context.Djeca.Include(d => d.Alergije).Include(d => d.Bolesti)
+                .FirstOrDefaultAsync(d => d.Id == vm.DijeteId && d.RoditeljId == korisnik.Id);
+            if (dijete == null) return Forbid();
+
+            vm.ImePrezime = Regex.Replace((vm.ImePrezime ?? string.Empty).Trim(), @"\s+", " ");
+
+            if (!ImePrezimeImaNajmanjeDvijeRijeciSaVelikimSlovom(vm.ImePrezime))
+            {
+                ModelState.AddModelError(
+                    nameof(vm.ImePrezime),
+                    "Ime i prezime djeteta moraju imati najmanje dvije riječi. Svaka riječ mora početi velikim slovom i sadržavati samo slova."
+                );
+            }
+
+            if (!DatumRodjenjaJeUDozvoljenomRasponu(vm.DatumRodjenja))
+            {
+                ModelState.AddModelError(
+                    nameof(vm.DatumRodjenja),
+                    "Datum rođenja mora biti u prošlosti, dijete mora imati najmanje 3 mjeseca i najviše 7 godina."
+                );
+            }
+
+            if (!SveStavkeImajuNajvise100Slova(vm.Alergije))
+                ModelState.AddModelError("Alergije", "Svaka alergija može imati najviše 100 slova.");
+
+            if (!SveStavkeImajuNajvise100Slova(vm.Bolesti))
+                ModelState.AddModelError("Bolesti", "Svaka bolest/stanje može imati najviše 100 slova.");
+
+            if (vm.Alergije != null)
+            {
+                var al = vm.Alergije.Where(a => !string.IsNullOrWhiteSpace(a)).Select(a => a.Trim().ToLower()).ToList();
+                if (al.Count != al.Distinct().Count())
+                    ModelState.AddModelError("Alergije", "Lista alergija sadrži duplikate.");
+            }
+            if (vm.Bolesti != null)
+            {
+                var bo = vm.Bolesti.Where(b => !string.IsNullOrWhiteSpace(b)).Select(b => b.Trim().ToLower()).ToList();
+                if (bo.Count != bo.Distinct().Count())
+                    ModelState.AddModelError("Bolesti", "Lista bolesti sadrži duplikate.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["NovaRegistracija"] = novaRegistracija;
+                return View(vm);
+            }
+
+            dijete.ImePrezime = vm.ImePrezime.Trim();
+            dijete.DatumRodjenja = vm.DatumRodjenja;
+            dijete.DodatnaNapomena = vm.DodatnaNapomena?.Trim() ?? string.Empty;
+
+            _context.AlergijeDjece.RemoveRange(dijete.Alergije);
+            if (vm.Alergije != null)
+                foreach (var naziv in vm.Alergije.Where(a => !string.IsNullOrWhiteSpace(a)))
+                    _context.AlergijeDjece.Add(new AlergijaDjeteta { DijeteId = dijete.Id, Naziv = naziv.Trim() });
+
+            _context.BolestiDjece.RemoveRange(dijete.Bolesti);
+            if (vm.Bolesti != null)
+                foreach (var naziv in vm.Bolesti.Where(b => !string.IsNullOrWhiteSpace(b)))
+                    _context.BolestiDjece.Add(new BolestDjeteta { DijeteId = dijete.Id, Naziv = naziv.Trim() });
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("RoditeljHome", "Home");
+        }
+
+        // ─── RODITELJ: Dodaj novo dijete sa kodom ───────────────────────────
+
+        [Authorize(Roles = "RODITELJ")]
+        public IActionResult DodajDijete() => View();
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "RODITELJ")]
+        public async Task<IActionResult> DodajDijete(string identifikacioniKod)
+        {
+            var korisnik = await _userManager.GetUserAsync(User);
+            if (korisnik == null) return Challenge();
+
+            if (string.IsNullOrWhiteSpace(identifikacioniKod))
+            {
+                ModelState.AddModelError("identifikacioniKod", "Identifikacioni kod je obavezan.");
+                return View();
+            }
+
+            var kod = identifikacioniKod.Trim();
+
+            if (kod.Length != 8)
+            {
+                ModelState.AddModelError("identifikacioniKod", "Identifikacioni kod mora imati tačno 8 karaktera.");
+                return View();
+            }
+
+            var dijete = await _context.Djeca.FirstOrDefaultAsync(d =>
+                EF.Functions.Collate(d.IdentifikacioniKod, "Latin1_General_CS_AS") == kod);
+
+            if (dijete == null)
+            {
+                ModelState.AddModelError("identifikacioniKod", "Dijete sa ovim kodom nije pronađeno.");
+                return View();
+            }
+
+            if (dijete.RoditeljId != null)
+            {
+                ModelState.AddModelError("identifikacioniKod", "Dijete je već povezano sa roditeljem.");
+                return View();
+            }
+
+            dijete.RoditeljId = korisnik.Id;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("UnosPodataka", new { id = dijete.Id });
+        }
+
+        // ─── RODITELJ: Pregled jednog djeteta ───────────────────────────────
+
+        [Authorize(Roles = "RODITELJ")]
+        public async Task<IActionResult> MojeDijete(int id)
+        {
+            var korisnik = await _userManager.GetUserAsync(User);
+            if (korisnik == null) return Challenge();
+
+            var dijete = await _context.Djeca
+                .Include(d => d.Alergije).Include(d => d.Bolesti).Include(d => d.Grupa)
+                .FirstOrDefaultAsync(d => d.Id == id && d.RoditeljId == korisnik.Id);
+
+            if (dijete == null) return Forbid();
+            return View(dijete);
+        }
+
+        // ─── ODGAJATELJ: Pregled jednog djeteta iz svoje grupe ──────────────
+
+        [Authorize(Roles = "ODGAJATELJ")]
+        public async Task<IActionResult> PodaciODjetetu(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var korisnik = await _userManager.GetUserAsync(User);
+            if (korisnik == null) return Challenge();
+
+            var odgajatelj = await _context.Odgajatelji
+                .FirstOrDefaultAsync(o => o.Id == korisnik.Id);
+
+            if (odgajatelj == null) return Forbid();
+
+            var dijete = await _context.Djeca
+                .Include(d => d.Grupa)
+                .Include(d => d.Roditelj)
+                .Include(d => d.Alergije)
+                .Include(d => d.Bolesti)
+                .FirstOrDefaultAsync(d => d.Id == id
+                    && d.Grupa != null
+                    && d.Grupa.OdgajateljId == odgajatelj.Id);
+
+            if (dijete == null) return Forbid();
+            return View(dijete);
+        }
+
+        // ─── CRUD (admin) ────────────────────────────────────────────────────
+
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public IActionResult Create()
+        {
+            return Forbid();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Create([Bind("Id,ImePrezime,IdentifikacioniKod,DatumRodjenja,DodatnaNapomena,Aktivno,GrupaId,RoditeljId")] Dijete dijete)
+        {
+            return Forbid();
+        }
+
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            return Forbid();
+            if (id == null) return NotFound();
+            var dijete = await _context.Djeca.FindAsync(id);
+            if (dijete == null) return NotFound();
+            ViewData["GrupaId"] = new SelectList(_context.Grupe, "Id", "ImeGrupe", dijete.GrupaId);
+            ViewData["RoditeljId"] = new SelectList(_context.Roditelji, "Id", "Email", dijete.RoditeljId);
+            return View(dijete);
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ImePrezime,IdentifikacioniKod,DatumRodjenja,DodatnaNapomena,Aktivno,GrupaId,RoditeljId")] Dijete dijete)
+        {
+            return Forbid();
+            if (id != dijete.Id) return NotFound();
+            if (ModelState.IsValid)
+            {
+                try { _context.Update(dijete); await _context.SaveChangesAsync(); }
+                catch (DbUpdateConcurrencyException) { if (!DijeteExists(dijete.Id)) return NotFound(); else throw; }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["GrupaId"] = new SelectList(_context.Grupe, "Id", "ImeGrupe", dijete.GrupaId);
+            ViewData["RoditeljId"] = new SelectList(_context.Roditelji, "Id", "Email", dijete.RoditeljId);
+            return View(dijete);
+        }
+
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            return Forbid();
+            if (id == null) return NotFound();
+            var dijete = await _context.Djeca.Include(d => d.Grupa).Include(d => d.Roditelj).FirstOrDefaultAsync(m => m.Id == id);
+            if (dijete == null) return NotFound();
+            return View(dijete);
+        }
+
+        [HttpPost, ActionName("Delete"), ValidateAntiForgeryToken]
+        [Authorize(Roles = "ADMINISTRATOR")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var dijete = await _context.Djeca.FindAsync(id);
+            if (dijete != null) _context.Djeca.Remove(dijete);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool DijeteExists(int id) => _context.Djeca.Any(e => e.Id == id);
+    }
+
+    public class UnosPodatakaViewModel
+    {
+        public int DijeteId { get; set; }
+
+        [Required(ErrorMessage = "Ime i prezime djeteta je obavezno.")]
+        [StringLength(100, ErrorMessage = "Ime i prezime djeteta može imati najviše 100 karaktera.")]
+        [Display(Name = "Ime i prezime djeteta")]
+        public string ImePrezime { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Datum rođenja je obavezan.")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Datum rođenja")]
+        public DateTime DatumRodjenja { get; set; }
+
+        [StringLength(500)]
+        [Display(Name = "Dodatna napomena")]
+        public string? DodatnaNapomena { get; set; }
+
+        public List<string> Alergije { get; set; } = new();
+        public List<string> Bolesti { get; set; } = new();
+    }
+}

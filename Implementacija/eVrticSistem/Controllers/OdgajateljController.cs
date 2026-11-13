@@ -1,0 +1,159 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using EVrtic.Data;
+using EVrtic.Models;
+using Microsoft.AspNetCore.Authorization;
+
+namespace EVrtic.Controllers
+{
+    [Authorize(Roles = "ADMINISTRATOR")]
+    public class OdgajateljController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public OdgajateljController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: Odgajatelj
+        public async Task<IActionResult> Index()
+        {
+            return Forbid();
+            return View(await _context.Odgajatelji.ToListAsync());
+        }
+
+        // ─── Deaktivacija / aktivacija profila odgajatelja ───────────────────
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Deaktiviraj(int id)
+        {
+            var odgajatelj = await _context.Odgajatelji.FindAsync(id);
+            if (odgajatelj == null) return NotFound();
+
+            odgajatelj.StatusNaloga = StatusNaloga.DEAKTIVIRAN;
+            await _context.SaveChangesAsync();
+
+            TempData["Uspjeh"] = $"Profil odgajatelja \"{odgajatelj.ImePrezime}\" je deaktiviran.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Aktiviraj(int id)
+        {
+            var odgajatelj = await _context.Odgajatelji.FindAsync(id);
+            if (odgajatelj == null) return NotFound();
+
+            odgajatelj.StatusNaloga = StatusNaloga.AKTIVAN;
+            await _context.SaveChangesAsync();
+
+            TempData["Uspjeh"] = $"Profil odgajatelja \"{odgajatelj.ImePrezime}\" je ponovo aktiviran.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Odgajatelj/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            return Forbid();
+            if (id == null) return NotFound();
+
+            var odgajatelj = await _context.Odgajatelji
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (odgajatelj == null) return NotFound();
+
+            return View(odgajatelj);
+        }
+
+        // GET: Odgajatelj/Create
+        public IActionResult Create()
+        {
+            return Forbid();
+            return View();
+        }
+
+        // POST: Odgajatelj/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,ImePrezime,Email,Uloga,StatusNaloga")] Odgajatelj odgajatelj)
+        {
+            return Forbid();
+            if (ModelState.IsValid)
+            {
+                _context.Add(odgajatelj);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(odgajatelj);
+        }
+
+        // GET: Odgajatelj/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            return Forbid();
+            if (id == null) return NotFound();
+
+            var odgajatelj = await _context.Odgajatelji.FindAsync(id);
+            if (odgajatelj == null) return NotFound();
+            return View(odgajatelj);
+        }
+
+        // POST: Odgajatelj/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ImePrezime,Email,Uloga,StatusNaloga")] Odgajatelj odgajatelj)
+        {
+            return Forbid();
+            if (id != odgajatelj.Id) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(odgajatelj);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OdgajateljExists(odgajatelj.Id)) return NotFound();
+                    else throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(odgajatelj);
+        }
+
+        // GET: Odgajatelj/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            return Forbid();
+            if (id == null) return NotFound();
+
+            var odgajatelj = await _context.Odgajatelji
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (odgajatelj == null) return NotFound();
+
+            return View(odgajatelj);
+        }
+
+        // POST: Odgajatelj/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var odgajatelj = await _context.Odgajatelji.FindAsync(id);
+            if (odgajatelj != null) _context.Odgajatelji.Remove(odgajatelj);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool OdgajateljExists(int id)
+        {
+            return _context.Odgajatelji.Any(e => e.Id == id);
+        }
+    }
+}

@@ -1,0 +1,47 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EVrtic.Models
+{
+    public class Dijete
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string ImePrezime { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(8, MinimumLength = 8, ErrorMessage = "Identifikacioni kod mora imati tačno 8 karaktera.")]
+        public string IdentifikacioniKod { get; set; } = string.Empty;
+
+        [StringLength(500)]
+        public string DodatnaNapomena { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Datum rođenja je obavezan.")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Datum rođenja")]
+        public DateTime DatumRodjenja { get; set; }
+
+        public bool Aktivno { get; set; } = true;
+
+        public int? GrupaId { get; set; }
+
+        [ForeignKey(nameof(GrupaId))]
+        public Grupa? Grupa { get; set; }
+
+        public int? RoditeljId { get; set; }
+
+        [ForeignKey(nameof(RoditeljId))]
+        public Roditelj? Roditelj { get; set; }
+
+        public ICollection<AlergijaDjeteta> Alergije { get; set; } = new List<AlergijaDjeteta>();
+        public ICollection<BolestDjeteta> Bolesti { get; set; } = new List<BolestDjeteta>();
+        public ICollection<DnevniIzvjestaj> DnevniIzvjestaji { get; set; } = new List<DnevniIzvjestaj>();
+        public ICollection<EvidencijaDolaskaOdlaska> EvidencijeDolaskaOdlaska { get; set; } = new List<EvidencijaDolaskaOdlaska>();
+        public ICollection<SazetakAktivnosti> SazeciAktivnosti { get; set; } = new List<SazetakAktivnosti>();
+
+        public Dijete() { }
+    }
+}

@@ -1,0 +1,1106 @@
+@model EVrtic.Controllers.OdgajateljSazetakPregledViewModel
+
+@{
+    ViewData["Title"] = "Generisanje sažetka";
+
+  
+
+    string prikazPerioda = Model.Period == "Mjesec"
+        ? $"{Model.DatumPocetka:MM.yyyy.} "
+        : $"{Model.DatumPocetka:dd.MM.yyyy.} - {Model.DatumKraja:dd.MM.yyyy.}";
+
+   }
+
+<div class="educator-summary-page">
+    <div class="educator-summary-card">
+
+        <aside class="educator-sidebar">
+            <h1 class="educator-logo">eVrtić</h1>
+<nav class="educator-menu">
+    <a class="educator-link" asp-controller="Home" asp-action="OdgajateljHome">
+        <span>🏠</span>
+        Početna
+    </a>
+
+    <a class="educator-link" asp-controller="DnevniIzvjestaj" asp-action="EvidencijaAktivnosti">
+        <span>📝</span>
+        Aktivnosti
+    </a>
+
+    <a class="educator-link" asp-controller="EvidencijaDolaskaOdlaska" asp-action="OdgajateljPregled">
+        <span>☑️</span>
+        Dolazak/Odlazak
+    </a>
+
+    <a class="educator-link" asp-controller="Obavijest" asp-action="OdgajateljObavijesti">
+        <span>🔔</span>
+        Obavijesti
+    </a>
+
+    <a class="educator-link active" asp-controller="SazetakAktivnosti" asp-action="OdgajateljPregled">
+        <span>📊</span>
+        Sažeci
+    </a>
+
+    <a class="educator-link" asp-controller="Korisnik" asp-action="Profil">
+        <span>👤</span>
+        Profil
+    </a>
+
+
+</nav>
+
+            <div class="sidebar-decoration">
+                <div class="cloud cloud-left"></div>
+                <div class="cloud cloud-right"></div>
+
+                <div class="ground-illustration">
+                    <div class="tree tree-left"><div class="tree-top"></div><div class="tree-trunk"></div></div>
+                    <div class="tree tree-right"><div class="tree-top"></div><div class="tree-trunk"></div></div>
+
+                    <div class="house-illustration">
+                        <div class="house-roof"></div>
+                        <div class="house-body">
+                            <div class="house-window"></div>
+                            <div class="house-door"></div>
+                            <div class="house-window"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="educator-main">
+            <div class="page-top">
+                <a asp-controller="Home" asp-action="OdgajateljHome" class="back-link">←</a>
+                <h1>Generisanje sažetka</h1>
+            </div>
+
+            <section class="hero-illustration" aria-hidden="true">
+                <div class="paper paper-left">
+                    <div class="small-line line-1"></div>
+                    <div class="small-line line-2"></div>
+                    <div class="pie-chart"></div>
+                </div>
+
+                <div class="paper paper-right">
+                    <div class="chart-line"></div>
+                    <div class="chart-line short"></div>
+                    <div class="bars">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </section>
+
+            <form method="get" asp-controller="SazetakAktivnosti" asp-action="OdgajateljPregled" class="summary-form">
+    <div class="period-toggle">
+        <label class="period-option">
+            <input type="radio"
+                   name="period"
+                   value="Sedmica"
+                   @(Model.Period == "Sedmica" ? "checked" : "") />
+            <span>Sedmica</span>
+        </label>
+
+        <label class="period-option">
+            <input type="radio"
+                   name="period"
+                   value="Mjesec"
+                   @(Model.Period == "Mjesec" ? "checked" : "") />
+            <span>Mjesec</span>
+        </label>
+    </div>
+
+    <div class="filters-row">
+        <div class="filter-group period-select-wrapper" id="sedmicaWrapper">
+            <label>Sedmica</label>
+            <select id="sedmicaSelect" name="pocetak">
+                @foreach (var sedmica in Model.SedmicneOpcije)
+                {
+                    <option value="@sedmica.Vrijednost"
+                            selected="@(Model.Period == "Sedmica" && Model.DatumPocetka.ToString("yyyy-MM-dd") == sedmica.Vrijednost)">
+                        @sedmica.Tekst
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-group period-select-wrapper" id="mjesecWrapper">
+            <label>Mjesec</label>
+            <select id="mjesecSelect">
+                @foreach (var mjesec in Model.MjesecneOpcije)
+                {
+                    <option value="@mjesec.Vrijednost"
+                            selected="@(Model.Period == "Mjesec" && Model.DatumPocetka.ToString("yyyy-MM-dd") == mjesec.Vrijednost)">
+                        @mjesec.Tekst
+                    </option>
+                }
+            </select>
+        </div>
+
+        
+
+        <div class="filter-group">
+    <label>Grupa</label>
+    <select name="grupaId">
+        <option value="">Sve grupe</option>
+        @foreach (var grupa in Model.Grupe)
+        {
+            <option value="@grupa.Id" selected="@(Model.OdabranaGrupaId == grupa.Id)">
+                @grupa.ImeGrupe
+            </option>
+        }
+    </select>
+</div>
+    </div>
+
+    <button type="submit" name="generisi" value="true" class="generate-button">
+    ▣ Generiši sažetak
+</button>
+</form>
+               
+@if (!Model.PrikaziSazetak)
+{
+    <section class="empty-card">
+        <h3>Odaberite period i grupu.</h3>
+        <p>Sažetak će se prikazati nakon što kliknete na dugme Generiši sažetak.</p>
+    </section>
+}
+else if (!Model.Djeca.Any())
+{
+    <section class="empty-card">
+        <h3>Nema djece za prikaz.</h3>
+        <p>Odabrana grupa trenutno nema aktivnu djecu.</p>
+    </section>
+}
+else if (!Model.SazeciDjece.Any())
+{
+    <section class="empty-card">
+        <h3>Nema podataka za odabrani period.</h3>
+        <p>Za odabranu grupu i period nisu pronađeni sažeci aktivnosti.</p>
+    </section>
+}
+else
+{
+    <section class="children-summary-list">
+        @foreach (var sazetak in Model.SazeciDjece)
+        {
+            <article class="child-summary-block">
+                <section class="child-card">
+                    <div class="child-avatar">🧒</div>
+                    <div>
+                        <h2>@sazetak.Dijete.ImePrezime</h2>
+                        <p>Grupa: @(sazetak.Dijete.Grupa?.ImeGrupe ?? "Nije dodijeljena")</p>
+                        <p>Period: @prikazPerioda</p>
+                    </div>
+                </section>
+
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-title"><span>↓</span> Dolasci</div>
+                        <strong>@sazetak.BrojDolazaka</strong>
+                        <p>evidentiranih dolazaka</p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-title"><span>↑</span> Odlasci</div>
+                        <strong>@sazetak.BrojOdlazaka</strong>
+                        <p>evidentiranih odlazaka</p>
+                    </div>
+
+                    <div class="stat-card sleep-evaluation-card">
+                        <div class="stat-title"><span>☾</span> Spavanje</div>
+                        <p class="summary-sentence">@sazetak.OcjenaSpavanja</p>
+                    </div>
+                </section>
+
+                <section class="meal-summary-grid">
+                    <div class="meal-summary-card">
+                        <h3>🍽️ Doručak</h3>
+                        <p>@sazetak.OcjenaDorucka</p>
+                        <span>@sazetak.BrojDorucaka evidentiranih doručaka</span>
+                    </div>
+
+                    <div class="meal-summary-card">
+                        <h3>🍲 Ručak</h3>
+                        <p>@sazetak.OcjenaRucka</p>
+                        <span>@sazetak.BrojRucaka evidentiranih ručkova</span>
+                    </div>
+                </section>
+
+                <section class="note-card">
+                    <h3>Napomene po datumima</h3>
+
+                    @if (!sazetak.NapomenePoDatumima.Any())
+                    {
+                        <p>Nema napomena za odabrani period.</p>
+                    }
+                    else
+                    {
+                        <div class="note-list">
+                            @foreach (var napomena in sazetak.NapomenePoDatumima)
+                            {
+                                <div class="note-row">
+                                    <strong>@napomena.Datum.ToString("dd.MM.yyyy.")</strong>
+                                    <p>@napomena.Tekst</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                </section>
+            </article>
+        }
+    </section>
+}
+
+<nav class="educator-bottom-nav">
+    <a class="bottom-link" asp-controller="Home" asp-action="OdgajateljHome">
+        <span>🏠</span> Početna
+    </a>
+
+    <a class="bottom-link" asp-controller="DnevniIzvjestaj" asp-action="EvidencijaAktivnosti">
+        <span>📝</span> Aktivnosti
+    </a>
+
+    <a class="bottom-link active" asp-controller="SazetakAktivnosti" asp-action="OdgajateljPregled">
+        <span>📊</span> Sažeci
+    </a>
+
+    <a class="bottom-link" asp-controller="EvidencijaDolaskaOdlaska" asp-action="OdgajateljPregled">
+        <span>☑️</span> Dolazak/Odlazak
+    </a>
+
+    <a class="bottom-link" asp-controller="Obavijest" asp-action="OdgajateljObavijesti">
+        <span>🔔</span> Obavijesti
+    </a>
+</nav>
+                </main>
+
+     
+    </div>
+</div>
+
+
+
+<style>
+    body {
+        background: #eef3ff !important;
+    }
+
+    .educator-summary-page {
+        min-height: 100vh;
+        padding: 22px 0;
+        font-family: Arial, sans-serif;
+        color: #071733;
+    }
+
+    .educator-summary-card {
+        width: 100%;
+        max-width: 1250px;
+        min-height: 760px;
+        margin: 0 auto;
+        background: #fbfaff;
+        border-radius: 22px;
+        box-shadow: 0 8px 26px rgba(15, 23, 42, 0.08);
+        display: grid;
+        grid-template-columns: 235px 1fr;
+        overflow: hidden;
+    }
+
+    .educator-sidebar {
+        background: #ffffff;
+        border-right: 1px solid #e5e7eb;
+        padding: 28px 22px 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        min-width: 0;
+    }
+
+    .educator-logo {
+        margin: 0 0 34px;
+        color: #6d42db;
+        font-size: 2.7rem;
+        line-height: 1;
+        font-weight: 900;
+        text-align: center;
+    }
+
+    .educator-menu {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .educator-link {
+        min-height: 54px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 18px;
+        border-radius: 12px;
+        color: #071733;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 800;
+        box-sizing: border-box;
+    }
+
+    .educator-link:hover {
+        color: #6d42db;
+        background: #f3efff;
+        text-decoration: none;
+    }
+
+    .educator-link span {
+        width: 24px;
+        text-align: center;
+        font-size: 1.25rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .educator-link.active {
+        color: #7447d8;
+        background: #ece6ff;
+    }
+
+    .educator-link.active span {
+        color: #7447d8;
+    }
+
+    .sidebar-decoration {
+        margin-top: auto;
+        position: relative;
+        width: calc(100% + 44px);
+        margin-left: -22px;
+        height: 230px;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .cloud {
+        position: absolute;
+        background: #dbeafe;
+        border-radius: 50px;
+        z-index: 1;
+    }
+
+    .cloud::before,
+    .cloud::after {
+        content: "";
+        position: absolute;
+        background: #dbeafe;
+        border-radius: 50%;
+    }
+
+    .cloud-left {
+        width: 56px;
+        height: 18px;
+        left: 48px;
+        top: 22px;
+    }
+
+    .cloud-left::before {
+        width: 20px;
+        height: 20px;
+        left: 8px;
+        top: -10px;
+    }
+
+    .cloud-left::after {
+        width: 24px;
+        height: 24px;
+        left: 26px;
+        top: -12px;
+    }
+
+    .cloud-right {
+        width: 62px;
+        height: 20px;
+        right: 48px;
+        top: 8px;
+    }
+
+    .cloud-right::before {
+        width: 22px;
+        height: 22px;
+        left: 8px;
+        top: -10px;
+    }
+
+    .cloud-right::after {
+        width: 26px;
+        height: 26px;
+        left: 28px;
+        top: -13px;
+    }
+
+    .ground-illustration {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 150px;
+        background: #98c943;
+        border-top-left-radius: 42px;
+        border-top-right-radius: 42px;
+        z-index: 2;
+    }
+
+    .house-illustration {
+        position: absolute;
+        left: 50%;
+        bottom: 26px;
+        transform: translateX(-50%);
+        width: 132px;
+        height: 105px;
+        z-index: 4;
+    }
+
+    .house-roof {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        width: 112px;
+        height: 42px;
+        background: #6243db;
+        clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        z-index: 5;
+    }
+
+    .house-body {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 104px;
+        height: 62px;
+        background: #ffd166;
+        border-radius: 6px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 12px;
+        padding-bottom: 12px;
+        z-index: 4;
+    }
+
+    .house-window {
+        width: 16px;
+        height: 24px;
+        background: #5fc0ef;
+        border-radius: 4px;
+        margin-bottom: 2px;
+    }
+
+    .house-door {
+        width: 20px;
+        height: 34px;
+        background: #6243db;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .tree {
+        position: absolute;
+        bottom: 16px;
+        z-index: 3;
+    }
+
+    .tree-left {
+        left: 42px;
+    }
+
+    .tree-right {
+        right: 42px;
+    }
+
+    .tree-top {
+        width: 30px;
+        height: 64px;
+        background: #8ac53a;
+        border-radius: 20px;
+        margin: 0 auto;
+    }
+
+    .tree-trunk {
+        width: 4px;
+        height: 62px;
+        background: #9c5c2f;
+        margin: -2px auto 0;
+        border-radius: 3px;
+    }
+
+    .educator-main {
+        grid-column: 2;
+        padding: 34px 48px 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page-top {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 18px;
+    }
+
+    .back-link {
+        color: #6243db;
+        text-decoration: none;
+        font-size: 2.2rem;
+        line-height: 1;
+    }
+
+    .page-top h1 {
+        margin: 0;
+        font-size: 2.1rem;
+        font-weight: 900;
+        color: #111827;
+    }
+
+    .hero-illustration {
+        width: 430px;
+        height: 230px;
+        margin: 0 auto 8px;
+        position: relative;
+    }
+
+    .paper {
+        position: absolute;
+        border-radius: 12px;
+        background: #dbeafe;
+        box-shadow: 0 10px 24px rgba(99, 102, 241, 0.18);
+    }
+
+    .paper-left {
+        left: 30px;
+        bottom: 24px;
+        width: 190px;
+        height: 145px;
+        transform: rotate(-8deg);
+    }
+
+    .paper-right {
+        right: 35px;
+        bottom: 36px;
+        width: 165px;
+        height: 190px;
+        background: #f8fbff;
+        border: 6px solid #c7d9ff;
+    }
+
+    .small-line,
+    .chart-line {
+        height: 10px;
+        background: #bfdbfe;
+        border-radius: 999px;
+        position: absolute;
+    }
+
+    .line-1 {
+        width: 48px;
+        left: 28px;
+        top: 26px;
+    }
+
+    .line-2 {
+        width: 76px;
+        left: 60px;
+        top: 70px;
+    }
+
+    .chart-line {
+        width: 110px;
+        left: 26px;
+        top: 30px;
+    }
+
+    .chart-line.short {
+        width: 70px;
+        top: 58px;
+    }
+
+    .pie-chart {
+        position: absolute;
+        width: 92px;
+        height: 92px;
+        left: 55px;
+        bottom: 28px;
+        border-radius: 50%;
+        background: conic-gradient(#fb553c 0 62%, #3b82f6 62% 74%, #33c56a 74% 88%, #facc15 88%);
+    }
+
+    .bars {
+        position: absolute;
+        left: 34px;
+        bottom: 36px;
+        height: 100px;
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+    }
+
+    .bars span {
+        width: 24px;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .bars span:nth-child(1) {
+        height: 38px;
+        background: #53c767;
+    }
+
+    .bars span:nth-child(2) {
+        height: 66px;
+        background: #fb553c;
+    }
+
+    .bars span:nth-child(3) {
+        height: 76px;
+        background: #60a5fa;
+    }
+
+    .bars span:nth-child(4) {
+        height: 112px;
+        background: #2563eb;
+    }
+
+    .summary-form {
+        max-width: 860px;
+        margin: 0 auto 22px;
+        width: 100%;
+    }
+
+
+
+    .period-toggle {
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        margin-bottom: 22px;
+    }
+
+    .period-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 900;
+        color: #071733;
+        cursor: pointer;
+    }
+
+    .period-option input[type="radio"] {
+        width: 22px;
+        height: 22px;
+        accent-color: #6d42db;
+    }
+
+ 
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-group label {
+        font-weight: 900;
+        color: #071733;
+    }
+
+.filters-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+    align-items: end;
+}
+
+.filter-group,
+.period-select-wrapper {
+    min-width: 0;
+}
+
+.filter-group select {
+    width: 100%;
+    box-sizing: border-box;
+    height: 58px;
+    border: 1px solid #dbe3f0;
+    border-radius: 12px;
+    padding: 0 18px;
+    background: #ffffff;
+    color: #071733;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+    .generate-button {
+        width: 100%;
+        height: 58px;
+        border: none;
+        border-radius: 12px;
+        background: #6d42db;
+        color: #ffffff;
+        font-family: inherit;
+        font-size: 1.08rem;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 12px 28px rgba(109, 66, 219, 0.25);
+    }
+
+    .generate-button:hover {
+        background: #5b35c8;
+    }
+
+    .child-card,
+    .stat-card,
+    .note-card,
+    .empty-card,
+    .meal-summary-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.07);
+    }
+
+    .child-card {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 18px 24px;
+        margin-bottom: 18px;
+    }
+
+    .child-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: #e0e7ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.25rem;
+        flex-shrink: 0;
+    }
+
+    .child-card h2 {
+        margin: 0 0 6px;
+        font-size: 1.5rem;
+        font-weight: 900;
+    }
+
+    .child-card p {
+        margin: 0;
+        color: #475569;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 18px;
+    }
+
+    .stat-card {
+        min-height: 145px;
+        padding: 20px 24px;
+    }
+
+    .stat-title {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        font-weight: 900;
+        color: #111827;
+    }
+
+    .stat-title span {
+        color: #6243db;
+    }
+
+    .stat-card strong {
+        display: block;
+        text-align: center;
+        font-size: 3.2rem;
+        line-height: 1;
+        margin: 26px 0 6px;
+        color: #0f172a;
+    }
+
+    .stat-card .sleep-text {
+        font-size: 2rem;
+    }
+
+    .sleep-evaluation-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.sleep-evaluation-card .stat-title {
+    width: 100%;
+    text-align: left; /* ako želiš da naslov "Spavanje" ostane gore lijevo */
+    margin-bottom: 18px;
+}
+
+.summary-sentence {
+    margin: 0;
+    text-align: center;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.5;
+    max-width: 220px;
+}
+
+    .stat-card p {
+        margin: 0;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .meal-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 18px;
+    }
+
+    .meal-summary-card {
+        padding: 22px 26px;
+        min-height: 150px;
+    }
+
+    .meal-summary-card h3 {
+        margin: 0 0 16px;
+        color: #111827;
+        font-size: 1.12rem;
+        font-weight: 900;
+    }
+
+    .meal-summary-card strong {
+        display: block;
+        font-size: 2.4rem;
+        line-height: 1;
+        color: #0f172a;
+        margin-bottom: 10px;
+    }
+
+    .meal-summary-card p {
+        margin: 0 0 8px;
+        color: #334155;
+        line-height: 1.45;
+        font-weight: 700;
+    }
+
+    .meal-summary-card span {
+        color: #64748b;
+        font-size: 0.95rem;
+    }
+
+    .note-card,
+    .empty-card {
+        padding: 22px 26px;
+        margin-bottom: 22px;
+    }
+
+    .note-card h3 {
+        margin: 0 0 12px;
+        color: #b45309;
+        font-weight: 900;
+    }
+
+    .note-card p,
+    .empty-card p {
+        margin: 0;
+        white-space: pre-line;
+        line-height: 1.55;
+    }
+
+    .empty-card h3 {
+        margin: 0 0 8px;
+    }
+
+    .note-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .note-row {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 12px 14px;
+        background: #f8fafc;
+    }
+
+    .note-row strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #6243db;
+    }
+
+    .note-row p {
+        margin: 0;
+    }
+
+    .educator-bottom-nav {
+        width: 100%;
+        min-height: 74px;
+        margin-top: auto;
+        border-top: 1px solid #e5e7eb;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 46px;
+    }
+
+    .bottom-link {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+        color: #475569;
+        font-weight: 800;
+        font-size: 0.95rem;
+        white-space: nowrap;
+    }
+
+    .bottom-link:hover {
+        color: #7447d8;
+        text-decoration: none;
+    }
+
+    .bottom-link.active {
+        color: #7447d8;
+    }
+
+    .bottom-link span {
+        font-size: 1.2rem;
+        line-height: 1;
+    }
+    .children-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    margin-top: 22px;
+}
+
+.child-summary-block {
+    background: #ffffff;
+    border: 1px solid #d8e0ef;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.10);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.child-summary-block::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 28px;
+    right: 28px;
+    height: 6px;
+    background: #6d42db;
+    border-radius: 0 0 999px 999px;
+}
+
+.child-summary-block .child-card {
+    margin-bottom: 0;
+    box-shadow: none;
+    border: 1px solid #e8ddff;
+    background: #fbfaff;
+}
+
+.child-summary-block .stat-card,
+.child-summary-block .meal-summary-card,
+.child-summary-block .note-card {
+    box-shadow: none;
+    border: 1px solid #eef2ff;
+    background: #ffffff;
+}
+
+.child-summary-block .note-card {
+    margin-bottom: 0;
+}
+
+.child-summary-block:last-child {
+    margin-bottom: 0;
+}
+
+    @@media (max-width: 1000px) {
+        .educator-summary-card {
+            grid-template-columns: 1fr;
+            border-radius: 0;
+        }
+
+        .educator-sidebar {
+            display: none;
+        }
+
+        .educator-main {
+            grid-column: 1;
+        }
+
+        .stats-grid,
+        .meal-summary-grid,
+        .filters-row {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-illustration {
+            width: 100%;
+            max-width: 430px;
+        }
+
+        .educator-bottom-nav {
+            gap: 22px;
+            flex-wrap: wrap;
+        }
+
+    }
+</style>
+
+
+<script>
+    function osvjeziPeriodPolja() {
+        const odabraniPeriod = document.querySelector('input[name="period"]:checked')?.value || "Sedmica";
+
+        const sedmicaWrapper = document.getElementById("sedmicaWrapper");
+        const mjesecWrapper = document.getElementById("mjesecWrapper");
+
+        const sedmicaSelect = document.getElementById("sedmicaSelect");
+        const mjesecSelect = document.getElementById("mjesecSelect");
+
+        if (odabraniPeriod === "Mjesec") {
+            sedmicaWrapper.style.display = "none";
+            mjesecWrapper.style.display = "block";
+
+            sedmicaSelect.removeAttribute("name");
+            mjesecSelect.setAttribute("name", "pocetak");
+        } else {
+            sedmicaWrapper.style.display = "block";
+            mjesecWrapper.style.display = "none";
+
+            mjesecSelect.removeAttribute("name");
+            sedmicaSelect.setAttribute("name", "pocetak");
+        }
+    }
+
+    document.querySelectorAll('input[name="period"]').forEach(radio => {
+        radio.addEventListener("change", osvjeziPeriodPolja);
+    });
+
+    osvjeziPeriodPolja();
+</script>

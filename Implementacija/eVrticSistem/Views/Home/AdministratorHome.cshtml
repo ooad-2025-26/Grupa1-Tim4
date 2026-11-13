@@ -1,0 +1,78 @@
+@model EVrtic.Controllers.AdministratorHomeViewModel
+
+@{
+    ViewData["Title"] = "Administrator početna";
+    ViewData["ActiveNav"] = "pocetna";
+    Layout = "_AdminLayout";
+}
+
+<div class="admin-top">
+    <div>
+        <h2>Pozdrav,</h2>
+        <h1>Administratore! <span class="title-gear">⚙️</span></h1>
+    </div>
+</div>
+
+<h3 class="admin-section-title">Pregled sistema</h3>
+
+<section class="admin-stats">
+    <div class="admin-stat-card">
+        <div class="admin-stat-ico ico-blue">👩‍🏫</div>
+        <div>
+            <p class="admin-stat-label">Odgajatelji</p>
+            <p class="admin-stat-value">@Model.BrojOdgajatelja</p>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-ico ico-pink">👨‍👩‍👧</div>
+        <div>
+            <p class="admin-stat-label">Roditelji</p>
+            <p class="admin-stat-value">@Model.BrojRoditelja</p>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-ico ico-teal">👧</div>
+        <div>
+            <p class="admin-stat-label">Djeca</p>
+            <p class="admin-stat-value">@Model.BrojDjece</p>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-ico ico-yellow">🏫</div>
+        <div>
+            <p class="admin-stat-label">Grupe</p>
+            <p class="admin-stat-value">@Model.BrojGrupa</p>
+        </div>
+    </div>
+</section>
+
+<h3 class="admin-section-title">Brzi pristup</h3>
+
+<section class="admin-grid">
+    <a class="admin-quick-card" asp-controller="Dijete" asp-action="DodajIdentifikacioniKod">
+        <div class="admin-quick-icon"><span>🔑</span></div>
+        <div><h4>Dodavanje koda</h4></div>
+        <span class="admin-quick-arrow">→</span>
+    </a>
+
+    <a class="admin-quick-card" asp-controller="Grupa" asp-action="Index">
+        <div class="admin-quick-icon"><span>🏫</span></div>
+        <div><h4>Grupe</h4></div>
+        <span class="admin-quick-arrow">→</span>
+    </a>
+
+    <a class="admin-quick-card" asp-controller="Dijete" asp-action="Index">
+        <div class="admin-quick-icon"><span>👧</span></div>
+        <div><h4>Djeca</h4></div>
+        <span class="admin-quick-arrow">→</span>
+    </a>
+
+    <a class="admin-quick-card" asp-controller="Korisnik" asp-action="Index">
+        <div class="admin-quick-icon"><span>👥</span></div>
+        <div><h4>Korisnici</h4></div>
+        <span class="admin-quick-arrow">→</span>
+    </a>
+</section>
